@@ -174,7 +174,7 @@ rows = [
      "https://landscapeconservation.org/knowledge-center/stories/the-catalyst-fund-shows-a-way-to-the-successful-conservation-stewardship-of-americas-landscapes/ ; https://landscapeconservation.org/wp-content/uploads/2017/12/Catalyst-Fund_RFP_2025-.pdf"],
 
     # ---------------- MEDICAL RESEARCH
-    ["Medical Research", "Pathways for Health Research Collective (More Than Medicine)", STRONG,
+    ["Medical Research", "Collective to Strengthen Pathways for Health Research (More Than Medicine)", STRONG,
      "Funder collective. Includes a one-time collaborative request for applications.",
      "Doris Duke Foundation (lead), American Cancer Society, American Heart Association, Burroughs Wellcome Fund, Dana Foundation, Donaghue Foundation, Robertson Foundation, Susan G. Komen, and other partners",
      "Doris Duke Foundation leads",
@@ -184,7 +184,7 @@ rows = [
      "Research on health solutions science: how care delivery, policy and living conditions shape health.",
      "Stated by DDF (Medical Research)",
      "High",
-     "Deadline is 8 days from today (Nov 10, 2026). Earlier name: Collective to Strengthen Pathways for Health Research.",
+     "Deadline is 8 days from today (Nov 10, 2026). DDF's program page uses the name Collective to Strengthen Pathways for Health Research; the public site is branded More Than Medicine.",
      "https://morethanmedicine.org/ ; https://dana.org/article/philanthropic-collective-aims-to-improve-disease-prevention-and-care/ ; https://dorisduke.org/news--insights/articles/revisiting-research-pathways"],
 
     ["Medical Research", "COVID-19 Fund to Retain Clinical Scientists", STRONG,
@@ -343,7 +343,7 @@ notes = [
     "The 'Program assignment basis' column shows where I chose the program myself. Check those rows.",
     "Confidence 'High' means a primary page (funder or partner) confirms the facts. 'Medium' means secondary sources only.",
     "Building Bridges: I found no multi-funder program. That does not prove none exists.",
-    "Open now: Pathways for Health Research Collective pre-proposals are due Nov 18, 2026, 3:00 p.m. ET.",
+    "Open now: Collective to Strengthen Pathways for Health Research pre-proposals are due Nov 18, 2026, 3:00 p.m. ET.",
     "Tabs: 'Related, not pooled' lists items I checked and left out. 'Leads and gaps' lists items to follow up.",
 ]
 for i, t in enumerate(notes):
