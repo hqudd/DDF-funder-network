@@ -94,6 +94,8 @@
   #detail ul { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
   #detail li { border-top: 1px solid var(--line); padding-top: 8px; }
   #detail li b.n { font-weight: 600; }
+  #detail .plink { font: inherit; font-weight: 600; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+  #detail .plink:hover, #detail .plink:focus-visible { text-decoration: underline; }
   #detail a { color: var(--accent); text-decoration: none; }
   #detail a:hover, #detail a:focus-visible { text-decoration: underline; }
   #detail .close { position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); font: 16px/1 var(--font); cursor: pointer; }
@@ -200,11 +202,11 @@
     <aside id="detail" hidden aria-live="polite"></aside>
   </div>
   <div class="foot">
+    <div class="legend" id="legend"></div>
     <details class="about" id="about">
       <summary>About this data</summary>
       <div class="body">
-        <div class="legend" id="legend"></div>
-        <p class="note">Each dot is a funder that has backed a program with the Doris Duke Foundation (DDF). Node color is the DDF program, split when a funder backs more than one. Node size is the funder's endowment (assets under management for FY23, or total assets from tax filings, 2023-2024; faint nodes had no figure found). Line width is the combined size of the programs two funders share, so it is not either funder's own contribution, which is mostly undisclosed. Amounts mean different things by program (a pledge, a goal, a first round, a cumulative total); each program's detail card says which. Dotted lines mean no amount was found. Faint lines connect funders that co-fund the same program; they show shared membership, not a direct relationship. Each group clusters together. Drag a node to move it. Years are when a program was announced or reported. The two handles set the first and last year shown; Play moves the end handle forward. Research as of Nov 12, 2026.</p>
+        <p class="note">Each dot represents a funder that has backed a program with the Doris Duke Foundation (DDF). Node color is the DDF program, split when a funder backs more than one. Node size is the funder's endowment (assets under management for FY23, or total assets from tax filings, 2023-2024; faint nodes had no figure found). Line width is the combined size of the programs two funders share, so it is not either funder's own contribution, which is mostly undisclosed. Amounts mean different things by program (a pledge, a goal, a first round, a cumulative total); each program's detail card says which. Dotted lines mean no amount was found. Faint lines connect funders that co-fund the same program; they show shared membership, not a direct relationship. Each group clusters together. Drag a node to move it. Years are when a program was announced or reported. The two handles set the first and last year shown; Play moves the end handle forward. Research as of Nov 12, 2026.</p>
       </div>
     </details>
   </div>
@@ -296,7 +298,17 @@
   svg.call(zoom);
   document.getElementById("zin").addEventListener("click", function () { svg.transition().duration(200).call(zoom.scaleBy, 1.6); });
   document.getElementById("zout").addEventListener("click", function () { svg.transition().duration(200).call(zoom.scaleBy, 1 / 1.6); });
-  document.getElementById("zrs").addEventListener("click", function () { svg.transition().duration(250).call(zoom.transform, d3.zoomIdentity); });
+  document.getElementById("zrs").addEventListener("click", function () {
+    svg.transition().duration(250).call(zoom.transform, d3.zoomIdentity);
+    clearHighlight();
+  });
+  // Reset also drops any highlight: the picked funder or link and the picked program. Open lists stay open.
+  function clearHighlight() {
+    if (view && view.t === "prog") { closeAll(); return; }
+    if (picked) select(null);
+    setProgram(null);
+    clearFocus();
+  }
   function fitTo(ids) {
     var xs = [], ys2 = [];
     nodes.forEach(function (d) { if (ids[d.id]) { xs.push(d.x); ys2.push(d.y); } });
@@ -487,7 +499,7 @@
   function progRows(ps) {
     return "<ul>" + ps.map(function (p) {
       var others = p.f.length - 1;
-      return "<li><b class='n'>" + esc(p.n) + "</b> <span class='m'>· <b class='pc' style='color:" + COLOR[p.pr] + "'>" + p.pr + "</b> · " + p.y + " · " + fmt(p.amt) + "</span>" +
+      return "<li><button type='button' class='plink' data-p=\"" + esc(p.n) + "\">" + esc(p.n) + "</button> <span class='m'>· <b class='pc' style='color:" + COLOR[p.pr] + "'>" + p.pr + "</b> · " + p.y + " · " + fmt(p.amt) + "</span>" +
         "<div class='m'>" + esc(p.basis) + " · " + others + " other funder" + (others === 1 ? "" : "s") +
         (p.src ? " · <a href='" + esc(p.src) + "' target='_blank' rel='noopener'>Source</a>" : "") + "</div></li>";
     }).join("") + "</ul>";
@@ -570,10 +582,25 @@
   }
   function showFunderList() { view = { t: "flist" }; backFn = null; picked = null; restore(); renderView(); }
   function showProgramList() { view = { t: "plist" }; backFn = null; picked = null; restore(); renderView(); }
-  function openProgram(name) {
+  function itemLabel(it) {
+    if (it.kind === "node") return nameOf(it.id);
+    var e = it.e; return e.ddf ? nameOf(e.source.id === "DDF" ? e.target.id : e.source.id) : e.source.id + " and " + e.target.id;
+  }
+  function openProgram(name, from) {
     var p = P.filter(function (x) { return x.n === name; })[0]; if (!p) return;
+    var fb = from ? { fn: backFn, label: backLabel } : null;
     view = { t: "prog", p: p }; picked = null;
-    backFn = function () { view = { t: "plist" }; setProgram(null); showProgramList(); }; backLabel = "Back to programs list";
+    if (from) {
+      backLabel = "Back to " + itemLabel(from);
+      backFn = function () {
+        view = null; setProgram(null);
+        var it = from.kind === "node" ? nodes.filter(function (n) { return n.id === from.id; })[0] : edges.filter(function (x) { return x.key === from.key; })[0];
+        if (!it) { select(null); return; }
+        select(from.kind === "node" ? { kind: "node", id: from.id, d: it } : { kind: "link", key: from.key, e: it }, fb && fb.fn ? fb : null);
+      };
+    } else {
+      backFn = function () { view = { t: "plist" }; setProgram(null); showProgramList(); }; backLabel = "Back to programs list";
+    }
     setProgram(name);
     restore(); renderView();
   }
@@ -595,12 +622,17 @@
     if (t.classList.contains("close")) closeAll();
     else if (t.classList.contains("back")) { if (backFn) backFn(); }
     else if (t.hasAttribute("data-f")) openFunder(t.getAttribute("data-f"));
-    else if (t.hasAttribute("data-p")) openProgram(t.getAttribute("data-p"));
+    else if (t.hasAttribute("data-p")) openProgram(t.getAttribute("data-p"), !view && picked ? picked : null);
   });
   bf.addEventListener("click", function () { if (view && view.t === "flist") closeAll(); else showFunderList(); });
   bp.addEventListener("click", function () { if (view && (view.t === "plist" || view.t === "prog")) closeAll(); else showProgramList(); });
+  // Opening the card narrows the graph, which can slide another node under a still pointer.
+  // Ignore hover until the pointer really moves, so the picked node keeps its highlight.
+  var moved = true;
+  window.addEventListener("pointermove", function () { moved = true; }, { passive: true });
   function select(item, back) {
     picked = item;
+    if (item) moved = false;
     view = null; backFn = back ? back.fn : null; backLabel = back ? back.label : "";
     syncTops();
     if (item) dismissHint();
@@ -686,12 +718,12 @@
       .on("end", function (ev, d) { if (!ev.active) sim.alphaTarget(0); if (d.id !== "DDF") { d.fx = null; d.fy = null; } else { d.fx = W / 2; d.fy = H / 2; } }));
     node.on("pointerdown", function (ev) { onDown(ev); hideTip(); })
         .on("pointerup", function (ev, d) { if (tapped(ev)) select(picked && picked.kind === "node" && picked.id === d.id ? null : { kind: "node", id: d.id, d: d }); press = null; })
-        .on("mouseenter", function (ev, d) { if (d.id !== "DDF" && ev.pointerType !== "touch") { focusOn(d); showNodeTip(ev, d); } })
+        .on("mouseenter", function (ev, d) { if (d.id !== "DDF" && ev.pointerType !== "touch" && moved) { focusOn(d); showNodeTip(ev, d); } })
         .on("mousemove", function (ev) { moveTip(ev); })
         .on("mouseleave", function () { hideTip(); restore(); });
     hit.on("pointerdown", function (ev) { onDown(ev); })
        .on("pointerup", function (ev, e) { if (tapped(ev)) select(picked && picked.kind === "link" && picked.key === e.key ? null : { kind: "link", key: e.key, e: e }); press = null; })
-       .on("mouseenter", function (ev, e) { focusLink(e); if (ev.pointerType !== "touch") showTip(ev, e); })
+       .on("mouseenter", function (ev, e) { if (!moved) return; focusLink(e); if (ev.pointerType !== "touch") showTip(ev, e); })
        .on("mousemove", function (ev) { moveTip(ev); })
        .on("mouseleave", function () { hideTip(); restore(); });
 
@@ -737,8 +769,7 @@
     el.innerHTML = "<svg viewBox='0 0 12 12' style='width:10px;height:10px'><circle cx='6' cy='6' r='6' style='fill:" + COLOR[k] + "'/></svg>" + k;
     lg.appendChild(el);
   });
-  // Wide screens show the legend and note by default; phones start with them folded.
-  document.getElementById("about").open = !small;
+  // The About note starts closed on every screen.
 
   update();
 })();
