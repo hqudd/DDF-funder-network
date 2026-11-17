@@ -58,6 +58,10 @@
   .hit { stroke: transparent; stroke-width: 16px; fill: none; cursor: pointer; }
   .node circle { fill: var(--bg); stroke: var(--bg); stroke-width: 1.5; cursor: pointer; }
   .node .pie path { pointer-events: none; }
+  /* Program view: highlighted funders get a ring, and faint ones (no endowment found) fill in so they do not look dimmed. */
+  .node.phot circle:not(.tap) { stroke: var(--accent); stroke-width: 2.5px; }
+  .node.phot .pie path.faint { fill-opacity: .65 !important; }
+  .node circle.tap { fill: transparent; stroke: none !important; cursor: pointer; }
   .chip i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
   .node text { font: 12px var(--font); fill: #fff; pointer-events: none; paint-order: stroke; stroke: var(--halo); stroke-width: 3px; stroke-linejoin: round; }
   .node.ddf text, .node.multi text { font-weight: 600; }
@@ -68,7 +72,7 @@
   .node.picked circle { stroke: var(--accent); stroke-width: 3; }
   .pdim { opacity: .1 !important; }
   .edge.phot { opacity: .95; stroke: var(--accent); }
-  .edge.other.phot { stroke-width: 1.8px; }
+  .edge.other.phot { stroke: var(--edge); opacity: .7; stroke-width: 1.8px; }
   .node.phot text { font-weight: 500; }
   .node.multi.hot text, .node.multi.phot text { font-weight: 600; }
   /* Funders with one program: lighter and thinner. Hover brings them back up slightly. */
@@ -264,9 +268,83 @@
     "Warhol Foundation": [0.36, "2023 total assets"], "Altman": [0.29, "2024 total assets"], "Robertson": [0.28, "total assets, year not stated"],
     "Frankenthaler": [0.17, "2024 total assets"], "Mozilla": [0.12, "2024 total assets"], "Kapor": [0.12, "total assets, year not stated"]
   };
+  // Funder websites (only where a site was found). Shown next to the endowment in the funder card.
+  var WEB = {
+    "DDF": "https://www.dorisduke.org",
+    "Ford": "https://www.fordfoundation.org",
+    "Lumina": "https://www.luminafoundation.org",
+    "Kapor": "https://www.kaporcenter.org/kapor-foundation/",
+    "MacArthur": "https://www.macfound.org",
+    "Mellon": "https://www.mellon.org",
+    "Mozilla": "https://foundation.mozilla.org",
+    "Omidyar": "https://omidyar.com",
+    "Packard": "https://www.packard.org",
+    "Siegel Endowment": "https://siegelendowment.org",
+    "Hewlett": "https://hewlett.org",
+    "Bloomberg": "https://www.bloomberg.org",
+    "Surdna": "https://surdna.org",
+    "Howard Gilman": "https://www.howardgilman.org",
+    "Booth Ferris": "https://www.boothferris.org",
+    "Lambent": "https://www.lambentfoundation.org",
+    "Altman": "https://www.altmanfoundation.org",
+    "Laurie M. Tisch Fund": "https://thelmtif.org",
+    "NY Community Trust": "https://www.nycommunitytrust.org",
+    "Matisse Foundation": "https://matissefoundation.org",
+    "Nathan Cummings": "https://nathancummings.org",
+    "Deutsche Bank Americas": "https://country.db.com/usa/responsibility/grant-guidelines",
+    "Mertz Gilmore": "https://www.mertzgilmore.org",
+    "Stavros Niarchos": "https://www.snf.org",
+    "Rockefeller Brothers": "https://www.rbf.org",
+    "Grantmakers in the Arts": "https://www.giarts.org",
+    "David Rockefeller Fund": "https://www.davidrockefellerfund.org",
+    "MacKenzie Scott": "https://yieldgiving.com",
+    "Jerome": "https://www.jeromefdn.org",
+    "Dreyfus Foundation": "https://www.dreyfus.org",
+    "Warhol Foundation": "https://warholfoundation.org",
+    "Mike Kelley Foundation": "https://www.mikekelleyfoundation.org",
+    "de Kooning Foundation": "https://www.dekooning.org",
+    "Gottlieb Foundation": "https://www.gottliebfoundation.org",
+    "Amazon Literary": "https://www.aboutamazon.com/our-communities/community-engagement/amazon-literary-partnership",
+    "Emily Hall Tremaine": "https://www.tremainefoundation.org",
+    "Frankenthaler": "https://www.frankenthalerfoundation.org",
+    "Joan Mitchell": "https://www.joanmitchellfoundation.org",
+    "Knight": "https://knightfoundation.org",
+    "Neiman Foundation": "https://leroyneimanfoundation.org",
+    "Metabolic Studio": "https://www.metabolicstudio.org",
+    "Pritzker Pucker": "https://pritzkerpuckerfoundation.org",
+    "Rauschenberg Foundation": "https://www.rauschenbergfoundation.org",
+    "Teiger Foundation": "https://www.teigerfoundation.org",
+    "Wallace Foundation": "https://www.wallacefoundation.org",
+    "Alaska Conservation": "https://alaskaconservation.org",
+    "Christensen Fund": "https://www.christensenfund.org",
+    "Decolonizing Wealth": "https://decolonizingwealth.com",
+    "Moore": "https://www.moore.org",
+    "J.M. Kaplan Fund": "https://www.jmkfund.org",
+    "Resources Legacy Fund": "https://resourceslegacyfund.org",
+    "Re:wild": "https://www.rewild.org",
+    "Walton Family": "https://www.waltonfamilyfoundation.org",
+    "Water Foundation": "https://waterfdn.org",
+    "Wilburforce": "https://www.wilburforce.org",
+    "Wyss": "https://wyssfoundation.org",
+    "Duke Endowment": "https://www.dukeendowment.org",
+    "Aviv": "https://avivfoundation.org",
+    "Casey": "https://www.aecf.org",
+    "Hilton": "https://www.hiltonfoundation.org",
+    "Audacious Project": "https://www.audaciousproject.org",
+    "American Cancer Society": "https://www.cancer.org",
+    "American Heart Assoc.": "https://www.heart.org",
+    "Burroughs Wellcome": "https://www.bwfund.org",
+    "Dana Foundation": "https://dana.org",
+    "Donaghue": "https://donaghue.org",
+    "Robertson": "https://www.robertsonfoundation.org",
+    "Susan G. Komen": "https://www.komen.org",
+    "Templeton": "https://www.templeton.org",
+    "Rita Allen": "https://www.ritaallenfoundation.org",
+    "Walder": "https://www.walderfoundation.org"
+  };
   var fmtE = function (v) { return v >= 1 ? "$" + (v >= 10 ? v.toFixed(0) : v.toFixed(1)) + "B" : "$" + Math.round(v * 1000) + "M"; };
-  var rScale = d3.scaleSqrt().domain([0, 16]).range([2.5, 17]);
-  var rOf = function (d) { return E[d.id] ? rScale(E[d.id][0]) : 3.5; };
+  var rScale = d3.scaleSqrt().domain([0, 16]).range([4, 24]);
+  var rOf = function (d) { return E[d.id] ? rScale(E[d.id][0]) : 6; };
   var COLOR = { "Arts": "var(--c-arts)", "Child Well-being": "var(--c-child)", "Environment": "var(--c-env)", "Medical Research": "var(--c-med)" };
   var PROGRAMS = ["Arts", "Child Well-being", "Environment", "Medical Research"];
   var YEARS = Array.from(new Set(P.map(function (p) { return p.y; }))).sort();
@@ -388,6 +466,11 @@
     if (sel) { var ids = {}; sel.f.forEach(function (n) { ids[n] = 1; }); fitTo(ids); }
     else svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity);
   });
+  // Choosing a program in the drop-down also opens its card on the right. "All" closes a program card.
+  pick.addEventListener("change", function () {
+    if (pick.value) { if (!(view && view.t === "prog" && view.p.n === pick.value)) openProgram(pick.value, picked); }
+    else if (view && view.t === "prog") closeAll();
+  });
   function applySel() {
     var inP = {};
     if (sel) sel.f.forEach(function (n) { inP[n] = 1; });
@@ -467,6 +550,8 @@
   var picked = null; // { kind: "node", d } or { kind: "link", e }
   function labels() {
     var fs = Math.max(12, (small ? 8 : 11) * ratio / kNow);
+    // Invisible tap target: at least 16 px (phone) or 10 px (desktop) on screen, whatever the zoom.
+    node.select("circle.tap").attr("r", function (d) { return Math.max(rOf(d), (small ? 16 : 10) * ratio / kNow); });
     node.select("text").style("font-size", fs + "px")
       .classed("off", function (d) {
         if (!small || kNow >= 2.5) return false;
@@ -640,7 +725,8 @@
     if (item.kind === "node") {
       var d = item.d;
       var en = E[d.id] ? fmtE(E[d.id][0]) + " <span class='m'>(" + E[d.id][1] + ")</span>" : "not found";
-      showDetail("<h2>" + esc(nameOf(d.id)) + "</h2><div class='m'>Endowment " + en + " · " + d.progs.length + " program" + (d.progs.length === 1 ? "" : "s") + " with DDF</div>" + progRows(d.progs));
+      var site = WEB[d.id] ? " · <a href='" + esc(WEB[d.id]) + "' target='_blank' rel='noopener'>Website \u2197</a>" : "";
+      showDetail("<h2>" + esc(nameOf(d.id)) + "</h2><div class='m'>Endowment " + en + site + "</div><div class='m'><b class='pc'>" + d.progs.length + "</b> program" + (d.progs.length === 1 ? "" : "s") + " with DDF</div>" + progRows(d.progs));
     } else {
       var e = item.e;
       var ttl = e.ddf ? nameOf(e.source.id === "DDF" ? e.target.id : e.source.id) : e.source.id + " and " + e.target.id;
@@ -694,7 +780,7 @@
 
     node = gN.selectAll("g.node").data(nodes, function (d) { return d.id; }).join(function (enter) {
       var g = enter.append("g").style("opacity", 0);
-      g.append("circle"); g.append("g").attr("class", "pie"); g.append("text").attr("text-anchor", "middle");
+      g.append("circle"); g.append("g").attr("class", "pie"); g.append("circle").attr("class", "tap"); g.append("text").attr("text-anchor", "middle");
       return g;
     }).attr("class", function (d) { return "node" + (d.id === "DDF" ? " ddf" : "") + (d.progs.length >= 2 ? " multi" : ""); });
     node.select("circle").attr("r", rOf);
@@ -705,6 +791,7 @@
       var pie = d3.pie().sort(null).value(1)(ks);
       d3.select(this).selectAll("path").data(pie).join("path")
         .attr("d", arc)
+        .attr("class", has ? null : "faint")
         .style("fill", function (a) { return a.data === "DDF" ? "var(--fg)" : COLOR[a.data]; })
         .style("fill-opacity", has ? 0.92 : 0.18)
         .style("stroke", function (a) { return a.data === "DDF" ? "var(--fg)" : COLOR[a.data]; })
@@ -723,7 +810,7 @@
         .on("mouseleave", function () { hideTip(); restore(); });
     hit.on("pointerdown", function (ev) { onDown(ev); })
        .on("pointerup", function (ev, e) { if (tapped(ev)) select(picked && picked.kind === "link" && picked.key === e.key ? null : { kind: "link", key: e.key, e: e }); press = null; })
-       .on("mouseenter", function (ev, e) { if (!moved) return; focusLink(e); if (ev.pointerType !== "touch") showTip(ev, e); })
+       .on("mouseenter", function (ev, e) { if (!moved || !e.ddf) return; focusLink(e); if (ev.pointerType !== "touch") showTip(ev, e); })
        .on("mousemove", function (ev) { moveTip(ev); })
        .on("mouseleave", function () { hideTip(); restore(); });
 
