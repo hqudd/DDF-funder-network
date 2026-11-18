@@ -129,6 +129,8 @@
   details.about summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
   details.about .body { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
   .note { max-width: none; margin: 0; line-height: 1.5; }
+  .how { align-self: flex-start; font-size: 13px; color: var(--accent); text-decoration: none; }
+  .how:hover, .how:focus-visible { text-decoration: underline; }
 
   label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; color: var(--fg); }
   input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -213,6 +215,7 @@
         <p class="note">Each dot represents a funder that has backed a program with the Doris Duke Foundation (DDF). Node color is the DDF program, split when a funder backs more than one. Node size is the funder's endowment (assets under management for FY23, or total assets from tax filings, 2023-2024; faint nodes had no figure found). Line width is the combined size of the programs two funders share, so it is not either funder's own contribution, which is mostly undisclosed. Amounts mean different things by program (a pledge, a goal, a first round, a cumulative total); each program's detail card says which. Dotted lines mean no amount was found. Faint lines connect funders that co-fund the same program; they show shared membership, not a direct relationship. Each group clusters together. Drag a node to move it. Years are when a program was announced or reported. The two handles set the first and last year shown; Play moves the end handle forward. Research as of Nov 12, 2026.</p>
       </div>
     </details>
+    <a class="how" href="how-claude-built-this.html">How Claude built this network visualization?</a>
   </div>
 </div>
 
