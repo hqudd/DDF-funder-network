@@ -444,7 +444,7 @@
   Object.keys(GWEB).forEach(function (n) { if (!WEB[n]) WEB[n] = GWEB[n]; });
   var fmtE = function (v) { return v >= 1 ? "$" + (v >= 10 ? v.toFixed(0) : v.toFixed(1)) + "B" : "$" + Math.round(v * 1000) + "M"; };
   var rScale = d3.scaleSqrt().domain([0, 16]).range([4, 24]);
-  var rOf = function (d) { return typeOf(d.id) !== "funder" ? 10 : E[d.id] ? rScale(E[d.id][0]) : 6; };
+  var rOf = function (d) { return typeOf(d.id) !== "funder" ? 7 : E[d.id] ? rScale(E[d.id][0]) : 6; };
   var COLOR = { "Arts": "var(--c-arts)", "Child Well-being": "var(--c-child)", "Environment": "var(--c-env)", "Medical Research": "var(--c-med)", "Building Bridges": "var(--c-bb)" };
   var PROGRAMS = ["Arts", "Building Bridges", "Child Well-being", "Environment", "Medical Research"];
   var YEARS = Array.from(new Set(P.map(function (p) { return p.y; }))).sort();
@@ -715,7 +715,7 @@
     tip.style.left = Math.max(4, x) + "px"; tip.style.top = Math.max(4, y) + "px";
   }
   function showNodeTip(ev, d) {
-    var en = PARTNER[d.id] ? "Partner (not a co-funder) \u00b7 " : typeOf(d.id) === "grantee" ? "Grantee \u00b7 " : E[d.id] ? "Endowment " + fmtE(E[d.id][0]) + " \u00b7 " : "";
+    var en = PARTNER[d.id] ? "Partner \u00b7 " : typeOf(d.id) === "grantee" ? "Grantee \u00b7 " : E[d.id] ? "Endowment " + fmtE(E[d.id][0]) + " \u00b7 " : "";
     tip.innerHTML = "<div class='hd'><h3>" + esc(nameOf(d.id)) + "</h3><span class='cta'>Click for more info</span></div><div class='m'>" + en + d.progs.length + " program" + (d.progs.length === 1 ? "" : "s") + " with DDF</div>" +
       "<ul>" + d.progs.map(function (p) { return "<li><i style='display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;background:" + COLOR[p.pr] + "'></i>" + esc(p.n) + "</li>"; }).join("") + "</ul>";
     tip.hidden = false; moveTip(ev);
