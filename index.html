@@ -842,7 +842,7 @@
       var d = item.d;
       var en = E[d.id] ? fmtE(E[d.id][0]) + " <span class='m'>(" + E[d.id][1] + ")</span>" : "not found";
       var site = WEB[d.id] ? " · <a href='" + esc(WEB[d.id]) + "' target='_blank' rel='noopener'>Website \u2197</a>" : "";
-      showDetail("<h2>" + esc(nameOf(d.id)) + "</h2><div class='m'>" + (PARTNER[d.id] ? "Partner: a grant recipient or program partner, not a co-funder" : typeOf(d.id) === "grantee" ? "Grantee: received a grant from the program, not a co-funder" : "Endowment " + en) + site + "</div><div class='m'><b class='pc'>" + d.progs.length + "</b> program" + (d.progs.length === 1 ? "" : "s") + " with DDF</div>" + progRows(d.progs, d.id));
+      showDetail("<h2>" + esc(nameOf(d.id)) + "</h2><div class='m'>" + (PARTNER[d.id] ? "Partner: a grant recipient or program partner" : typeOf(d.id) === "grantee" ? "Grantee: received a grant from the program" : "Endowment " + en) + site + "</div><div class='m'><b class='pc'>" + d.progs.length + "</b> program" + (d.progs.length === 1 ? "" : "s") + " with DDF</div>" + progRows(d.progs, d.id));
     } else {
       var e = item.e;
       var ttl = e.ddf ? nameOf(e.source.id === "DDF" ? e.target.id : e.source.id) : e.source.id + " and " + e.target.id;
