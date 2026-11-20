@@ -443,16 +443,25 @@
     var b = document.createElement("button");
     b.className = "chip"; b.type = "button"; b.innerHTML = "<i style='background:" + COLOR[k] + "'></i>" + k; b.setAttribute("aria-pressed", "true");
     b.addEventListener("click", function () {
-      on[k] = !on[k]; b.setAttribute("aria-pressed", String(on[k])); update();
+      on[k] = !on[k]; b.setAttribute("aria-pressed", String(on[k])); if (!syncPick()) update();
     });
     chipBox.appendChild(b);
   });
   // ---- Program picker (A-Z). Selecting one highlights its funders and links, and zooms to fit them.
   var pick = document.getElementById("pick"), sel = null;
-  pick.add(new Option("All", ""));
-  P.slice().sort(function (a, b) { return a.n.localeCompare(b.n); }).forEach(function (p) {
-    pick.add(new Option(p.n + " (" + p.pr + ", " + p.y + ", " + fmt(p.amt) + ")", p.n));
-  });
+  // The list shows only programs in categories that are turned on. Turning a category off while one of its programs is picked clears the pick.
+  function syncPick() {
+    var prev = pick.value;
+    while (pick.options.length) pick.remove(0);
+    pick.add(new Option("All", ""));
+    P.slice().sort(function (a, b) { return a.n.localeCompare(b.n); }).forEach(function (p) {
+      if (on[p.pr]) pick.add(new Option(p.n + " (" + p.pr + ", " + p.y + ", " + fmt(p.amt) + ")", p.n));
+    });
+    pick.value = prev;
+    if (prev && pick.value !== prev) { pick.value = ""; pick.dispatchEvent(new Event("change")); return true; }
+    return false;
+  }
+  syncPick();
   pick.addEventListener("change", function () {
     sel = P.filter(function (p) { return p.n === pick.value; })[0] || null;
     if (sel) {
@@ -746,6 +755,19 @@
     press = null;
   });
 
+  // Tapping a funder that is dimmed because a program is picked: reset that program highlight, then highlight the funder.
+  function tapNode(d) {
+    if (sel && sel.f.indexOf(d.id) < 0) {
+      var id = d.id;
+      view = null; backFn = null;
+      setProgram(null);
+      var nd = nodes.filter(function (n) { return n.id === id; })[0];
+      if (nd) select({ kind: "node", id: id, d: nd });
+      return;
+    }
+    select(picked && picked.kind === "node" && picked.id === d.id ? null : { kind: "node", id: d.id, d: d });
+  }
+
   function update() {
     nodes.forEach(function (d) { pos[d.id] = { x: d.x, y: d.y }; });
     var a = YEARS[+ys.value], b = YEARS[+ye.value];
@@ -807,7 +829,7 @@
       .on("drag", function (ev, d) { var p = d3.pointer(ev, zl.node()); d.fx = p[0]; d.fy = p[1]; })
       .on("end", function (ev, d) { if (!ev.active) sim.alphaTarget(0); if (d.id !== "DDF") { d.fx = null; d.fy = null; } else { d.fx = W / 2; d.fy = H / 2; } }));
     node.on("pointerdown", function (ev) { onDown(ev); hideTip(); })
-        .on("pointerup", function (ev, d) { if (tapped(ev)) select(picked && picked.kind === "node" && picked.id === d.id ? null : { kind: "node", id: d.id, d: d }); press = null; })
+        .on("pointerup", function (ev, d) { if (tapped(ev)) tapNode(d); press = null; })
         .on("mouseenter", function (ev, d) { if (d.id !== "DDF" && ev.pointerType !== "touch" && moved) { focusOn(d); showNodeTip(ev, d); } })
         .on("mousemove", function (ev) { moveTip(ev); })
         .on("mouseleave", function () { hideTip(); restore(); });
