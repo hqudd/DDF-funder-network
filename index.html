@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>DDF Funders Network</title>
+<title>DDF Funders and Partners Network</title>
 <style>
   /* Layout: sticky control bar, one full-width graph, a detail card for the tapped item, then an About disclosure. */
   :root {
@@ -19,13 +19,13 @@
     --card-bg: #ffffff;
     --ctl-bg: #ebecee;
     --halo: #6b7280;
-    --c-arts: #FF0080; --c-child: #D9A8FF; --c-env: #FF452E; --c-med: #FF1AFF;
+    --c-arts: #FF0080; --c-child: #D9A8FF; --c-env: #FF452E; --c-med: #FF1AFF; --c-bb: #FFB000;
     --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #14171b; --fg: #e7e9ec; --muted: #9aa3ad; --edge: #7b8590; --edge2: #5d6670;
-      --c-arts: #FF0080; --c-child: #D9A8FF; --c-env: #FF452E; --c-med: #FF1AFF;
+      --c-arts: #FF0080; --c-child: #D9A8FF; --c-env: #FF452E; --c-med: #FF1AFF; --c-bb: #FFB000;
       --node: #aab2bc; --accent: #5eead4; --line: #262b31; --card-bg: #1d2227; --ctl-bg: #1f242a; --halo: #3a4149;
       color-scheme: dark;
     }
@@ -34,7 +34,7 @@
   :root[data-theme="dark"] #yrmark { color: #3a4149; }
   :root[data-theme="dark"] {
     --bg: #14171b; --fg: #e7e9ec; --muted: #9aa3ad; --edge: #7b8590; --edge2: #5d6670;
-    --c-arts: #FF0080; --c-child: #D9A8FF; --c-env: #FF452E; --c-med: #FF1AFF;
+    --c-arts: #FF0080; --c-child: #D9A8FF; --c-env: #FF452E; --c-med: #FF1AFF; --c-bb: #FFB000;
     --node: #aab2bc; --accent: #5eead4; --line: #262b31; --card-bg: #1d2227; --ctl-bg: #1f242a; --halo: #3a4149;
     color-scheme: dark;
   }
@@ -58,6 +58,8 @@
   .hit { stroke: transparent; stroke-width: 16px; fill: none; cursor: pointer; }
   .node circle { fill: var(--bg); stroke: var(--bg); stroke-width: 1.5; cursor: pointer; }
   .node .pie path { pointer-events: none; }
+  /* Partners (recipients, not co-funders) get a dashed outline. */
+  .node.partner circle:not(.tap) { stroke: var(--fg); stroke-width: 1.5px; stroke-dasharray: 3 3; }
   /* Program view: highlighted funders get a ring, and faint ones (no endowment found) fill in so they do not look dimmed. */
   .node.phot circle:not(.tap) { stroke: var(--accent); stroke-width: 2.5px; }
   .node.phot .pie path.faint { fill-opacity: .65 !important; }
@@ -189,7 +191,7 @@
 
 <div class="wrap">
   <header>
-    <h1>DDF Funders Network</h1>
+    <h1>DDF Funders and Partners Network</h1>
   </header>
   <div class="controls">
     <div class="grp" id="progs" role="group" aria-label="DDF program"></div>
@@ -198,7 +200,7 @@
   </div>
   <div class="stage">
     <div class="gwrap">
-    <svg id="g" viewBox="0 0 1240 940" role="img" aria-label="Network of funders that have co-funded programs with the Doris Duke Foundation"></svg>
+    <svg id="g" viewBox="0 0 1240 940" role="img" aria-label="Network of funders and partners that have worked on programs with the Doris Duke Foundation"></svg>
     <div class="tops"><button type="button" class="tb" id="bf" aria-pressed="false"></button><button type="button" class="tb" id="bp" aria-pressed="false"></button></div>
     <div class="zoom" role="group" aria-label="Zoom"><button type="button" id="zin" aria-label="Zoom in">+</button><button type="button" id="zout" aria-label="Zoom out">&minus;</button><button type="button" id="zrs" class="rs" aria-label="Reset zoom">Reset</button></div>
     <div id="yrmark" hidden aria-hidden="true"></div>
@@ -212,7 +214,7 @@
     <details class="about" id="about">
       <summary>About this data</summary>
       <div class="body">
-        <p class="note">Each dot represents a funder that has backed a program with the Doris Duke Foundation (DDF). Node color is the DDF program, split when a funder backs more than one. Node size is the funder's endowment (assets under management for FY23, or total assets from tax filings, 2023-2024; faint nodes had no figure found). Line width is the combined size of the programs two funders share, so it is not either funder's own contribution, which is mostly undisclosed. Amounts mean different things by program (a pledge, a goal, a first round, a cumulative total); each program's detail card says which. Dotted lines mean no amount was found. Faint lines connect funders that co-fund the same program; they show shared membership, not a direct relationship. Each group clusters together. Drag a node to move it. Years are when a program was announced or reported. The two handles set the first and last year shown; Play moves the end handle forward. Research as of Nov 12, 2026.</p>
+        <p class="note">Each dot represents a funder that has backed a program with the Doris Duke Foundation (DDF), or a partner that works on one. Partners, such as Sundance Institute and the Islamic Scholarship Fund, are grant recipients or program partners, not co-funders. They have a dashed outline. Node color is the DDF program, split when a funder backs more than one. Node size is the funder's endowment (assets under management for FY23, or total assets from tax filings, 2023-2024; faint nodes had no figure found). Line width is the combined size of the programs two funders share, so it is not either funder's own contribution, which is mostly undisclosed. Amounts mean different things by program (a pledge, a goal, a first round, a cumulative total); each program's detail card says which. Dotted lines mean no amount was found. Faint lines connect funders that co-fund the same program; they show shared membership, not a direct relationship. Each group clusters together. Drag a node to move it. Years are when a program was announced or reported. The two handles set the first and last year shown; Play moves the end handle forward. Research as of Nov 12, 2026.</p>
       </div>
     </details>
     <a class="how" href="how-claude-built-this.html">How Claude built this network visualization?</a>
@@ -259,8 +261,22 @@
       f: ["DDF","American Cancer Society","American Heart Assoc.","Burroughs Wellcome","Dana Foundation","Donaghue","Robertson","Susan G. Komen"] },
     { n: "COVID-19 Fund to Retain Clinical Scientists", pr: "Medical Research", y: 2021, amt: 12.1, basis: "First round of grants to 22 medical schools",
       src: "https://www.dorisduke.org/siteassets/news--insights/2021-press-releases/11.16.21-covid19-frcs-press-release.pdf",
-      f: ["DDF","American Heart Assoc.","Burroughs Wellcome","Templeton","Rita Allen","Walder"] }
+      f: ["DDF","American Heart Assoc.","Burroughs Wellcome","Templeton","Rita Allen","Walder"] },
+    { n: "Building Bridges Fellowship and Completion Fund", pr: "Building Bridges", y: 2024, amt: 1, basis: "$1M DDF grant over three years to Sundance Institute; Islamic Scholarship Fund is a partner and sits on the selection panel",
+      src: "https://www.sundance.org/blogs/doris-duke-foundation-announces-1m-grant-to-sundance-institute-expanding-commitment-to-uplifting-muslim-storytelling-with-new-building-bridges-fellowship-and-completion-fund/",
+      f: ["DDF","Sundance Institute","Islamic Scholarship Fund"] },
+    { n: "Muslim House (MPAC Hollywood Bureau)", pr: "Building Bridges", y: 2024, amt: 1.4, basis: "$1.425M DDF grant over three years, part of a $6M set of grants (Jan 2024)",
+      src: "https://dorisduke.org/news--insights/articles/doris-duke-foundation-announces-$6m-effort-to-change-the-face-of-hollywood-at-sundance-film-festival",
+      f: ["DDF","MPAC Hollywood Bureau"] },
+    { n: "U.S. Muslim Documentary Fund", pr: "Building Bridges", y: 2024, amt: 4.5, basis: "$4.5M DDF grant over three years to the Center for Asian American Media, part of a $6M set of grants (Jan 2024)",
+      src: "https://dorisduke.org/news--insights/articles/doris-duke-foundation-announces-$6m-effort-to-change-the-face-of-hollywood-at-sundance-film-festival",
+      f: ["DDF","Center for Asian American Media"] },
+    { n: "Islamic Scholarship Fund creative fellowship pilot", pr: "Building Bridges", y: 2024, amt: 0.1, basis: "$100K DDF grant to pilot a fellowship for emerging U.S. Muslim creatives (Jan 2024)",
+      src: "https://dorisduke.org/news--insights/articles/doris-duke-foundation-announces-$6m-effort-to-change-the-face-of-hollywood-at-sundance-film-festival",
+      f: ["DDF","Islamic Scholarship Fund"] }
   ];
+  // Partners are grant recipients and program partners, not co-funders.
+  var PARTNER = { "Sundance Institute": 1, "Islamic Scholarship Fund": 1, "MPAC Hollywood Bureau": 1, "Center for Asian American Media": 1 };
   // Endowment in $ billions: [value, basis]. FY23 figures are assets under management; the rest are total assets from tax filings.
   var E = {
     "DDF": [2.19, "FY23 AUM"], "Ford": [15.8, "FY23 AUM"], "Hewlett": [13.34, "FY23 AUM"], "MacArthur": [8.68, "FY23 AUM"],
@@ -343,13 +359,17 @@
     "Susan G. Komen": "https://www.komen.org",
     "Templeton": "https://www.templeton.org",
     "Rita Allen": "https://www.ritaallenfoundation.org",
-    "Walder": "https://www.walderfoundation.org"
+    "Walder": "https://www.walderfoundation.org",
+    "Sundance Institute": "https://www.sundance.org",
+    "Islamic Scholarship Fund": "https://islamicscholarshipfund.org",
+    "MPAC Hollywood Bureau": "https://www.mpac.org/hollywood-bureau/",
+    "Center for Asian American Media": "https://caamedia.org"
   };
   var fmtE = function (v) { return v >= 1 ? "$" + (v >= 10 ? v.toFixed(0) : v.toFixed(1)) + "B" : "$" + Math.round(v * 1000) + "M"; };
   var rScale = d3.scaleSqrt().domain([0, 16]).range([4, 24]);
   var rOf = function (d) { return E[d.id] ? rScale(E[d.id][0]) : 6; };
-  var COLOR = { "Arts": "var(--c-arts)", "Child Well-being": "var(--c-child)", "Environment": "var(--c-env)", "Medical Research": "var(--c-med)" };
-  var PROGRAMS = ["Arts", "Child Well-being", "Environment", "Medical Research"];
+  var COLOR = { "Arts": "var(--c-arts)", "Child Well-being": "var(--c-child)", "Environment": "var(--c-env)", "Medical Research": "var(--c-med)", "Building Bridges": "var(--c-bb)" };
+  var PROGRAMS = ["Arts", "Building Bridges", "Child Well-being", "Environment", "Medical Research"];
   var YEARS = Array.from(new Set(P.map(function (p) { return p.y; }))).sort();
   var nameOf = function (id) { return id === "DDF" ? "Doris Duke Foundation" : id; };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
@@ -523,7 +543,7 @@
     force.initialize = function (n) { ns = n; };
     return force;
   }
-  var HOME = { "Arts": [0.30, 0.58], "Environment": [0.50, 0.10], "Child Well-being": [0.86, 0.28], "Medical Research": [0.84, 0.82] };
+  var HOME = { "Building Bridges": [0.22, 0.17], "Arts": [0.30, 0.62], "Environment": [0.50, 0.10], "Child Well-being": [0.86, 0.28], "Medical Research": [0.84, 0.82] };
   function anchor(d) {
     if (d.id === "DDF") return [W / 2, H / 2];
     var ks = Object.keys(HOME).filter(function (k) { return d.progs.some(function (p) { return p.pr === k; }); });
@@ -597,7 +617,7 @@
     return "<ul>" + ps.map(function (p) {
       var others = p.f.length - 1;
       return "<li><button type='button' class='plink' data-p=\"" + esc(p.n) + "\">" + esc(p.n) + "</button> <span class='m'>· <b class='pc' style='color:" + COLOR[p.pr] + "'>" + p.pr + "</b> · " + p.y + " · " + fmt(p.amt) + "</span>" +
-        "<div class='m'>" + esc(p.basis) + " · " + others + " other funder" + (others === 1 ? "" : "s") +
+        "<div class='m'>" + esc(p.basis) + " · " + others + " other funder" + (others === 1 ? "" : "s") + "/partner" + (others === 1 ? "" : "s") +
         (p.src ? " · <a href='" + esc(p.src) + "' target='_blank' rel='noopener'>Source</a>" : "") + "</div></li>";
     }).join("") + "</ul>";
   }
@@ -617,7 +637,7 @@
     tip.style.left = Math.max(4, x) + "px"; tip.style.top = Math.max(4, y) + "px";
   }
   function showNodeTip(ev, d) {
-    var en = E[d.id] ? "Endowment " + fmtE(E[d.id][0]) + " \u00b7 " : "";
+    var en = PARTNER[d.id] ? "Partner (not a co-funder) \u00b7 " : E[d.id] ? "Endowment " + fmtE(E[d.id][0]) + " \u00b7 " : "";
     tip.innerHTML = "<div class='hd'><h3>" + esc(nameOf(d.id)) + "</h3><span class='cta'>Click for more info</span></div><div class='m'>" + en + d.progs.length + " program" + (d.progs.length === 1 ? "" : "s") + " with DDF</div>" +
       "<ul>" + d.progs.map(function (p) { return "<li><i style='display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;background:" + COLOR[p.pr] + "'></i>" + esc(p.n) + "</li>"; }).join("") + "</ul>";
     tip.hidden = false; moveTip(ev);
@@ -642,7 +662,7 @@
     return "<span class='dots'>" + PROGRAMS.filter(function (k) { return seen[k]; }).map(function (k) { return "<i style='background:" + COLOR[k] + "'></i>"; }).join("") + "</span>";
   }
   function funderBtn(d) {
-    var en = E[d.id] ? "Endowment " + fmtE(E[d.id][0]) + " \u00b7 " : "";
+    var en = PARTNER[d.id] ? "Partner \u00b7 " : E[d.id] ? "Endowment " + fmtE(E[d.id][0]) + " \u00b7 " : "";
     return "<button type='button' class='li-btn' data-f=\"" + esc(d.id) + "\"><b>" + esc(nameOf(d.id)) + "</b> " + dotsOf(d.progs) +
       "<span class='m'>" + en + d.progs.length + " program" + (d.progs.length === 1 ? "" : "s") + "</span></button>";
   }
@@ -653,7 +673,7 @@
     var keep = detail.scrollTop, html;
     if (view.t === "flist") {
       var fl = nodes.filter(function (d) { return d.id !== "DDF"; }).sort(byProgs);
-      html = "<h2>" + fl.length + " funder" + (fl.length === 1 ? "" : "s") + "</h2><div class='lst'>" +
+      html = "<h2>" + fl.length + (fl.length === 1 ? " funder or partner" : " funders and partners") + "</h2><div class='lst'>" +
         (fl.length ? fl.map(funderBtn).join("") : "<div class='m'>No funders match these filters.</div>") + "</div>";
     } else if (view.t === "plist") {
       var pl = curAct.slice().sort(function (a, b) { return a.n.localeCompare(b.n); });
@@ -666,7 +686,7 @@
         .filter(Boolean).sort(byProgs);
       html = "<h2>" + esc(p.n) + "</h2><div class='m'><b class='pc' style='color:" + COLOR[p.pr] + "'>" + p.pr + "</b> \u00b7 " + p.y + " \u00b7 " + fmt(p.amt) + "</div>" +
         "<div class='m'>" + esc(p.basis) + (p.src ? " \u00b7 <a href='" + esc(p.src) + "' target='_blank' rel='noopener'>Source</a>" : "") + "</div>" +
-        "<div class='m' style='margin-top:8px'>" + fs.length + " other funder" + (fs.length === 1 ? "" : "s") + " (plus DDF)</div><div class='lst'>" + fs.map(funderBtn).join("") + "</div>";
+        "<div class='m' style='margin-top:8px'>" + fs.length + " other funder" + (fs.length === 1 ? "" : "s") + "/partner" + (fs.length === 1 ? "" : "s") + " (plus DDF)</div><div class='lst'>" + fs.map(funderBtn).join("") + "</div>";
     }
     syncTops();
     showDetail(html, quiet);
@@ -738,7 +758,7 @@
       var d = item.d;
       var en = E[d.id] ? fmtE(E[d.id][0]) + " <span class='m'>(" + E[d.id][1] + ")</span>" : "not found";
       var site = WEB[d.id] ? " · <a href='" + esc(WEB[d.id]) + "' target='_blank' rel='noopener'>Website \u2197</a>" : "";
-      showDetail("<h2>" + esc(nameOf(d.id)) + "</h2><div class='m'>Endowment " + en + site + "</div><div class='m'><b class='pc'>" + d.progs.length + "</b> program" + (d.progs.length === 1 ? "" : "s") + " with DDF</div>" + progRows(d.progs));
+      showDetail("<h2>" + esc(nameOf(d.id)) + "</h2><div class='m'>" + (PARTNER[d.id] ? "Partner: a grant recipient or program partner, not a co-funder" : "Endowment " + en) + site + "</div><div class='m'><b class='pc'>" + d.progs.length + "</b> program" + (d.progs.length === 1 ? "" : "s") + " with DDF</div>" + progRows(d.progs));
     } else {
       var e = item.e;
       var ttl = e.ddf ? nameOf(e.source.id === "DDF" ? e.target.id : e.source.id) : e.source.id + " and " + e.target.id;
@@ -794,7 +814,7 @@
     });
     var nf = nodes.length ? nodes.length - 1 : 0;
     curAct = act;
-    bf.textContent = nf + " funder" + (nf === 1 ? "" : "s");
+    bf.textContent = nf + (nf === 1 ? " funder or partner" : " funders and partners");
     bp.textContent = act.length + " program" + (act.length === 1 ? "" : "s");
     document.getElementById("empty").style.display = act.length ? "none" : "flex";
 
@@ -807,7 +827,7 @@
       var g = enter.append("g").style("opacity", 0);
       g.append("circle"); g.append("g").attr("class", "pie"); g.append("circle").attr("class", "tap"); g.append("text").attr("text-anchor", "middle");
       return g;
-    }).attr("class", function (d) { return "node" + (d.id === "DDF" ? " ddf" : "") + (d.progs.length >= 2 ? " multi" : ""); });
+    }).attr("class", function (d) { return "node" + (d.id === "DDF" ? " ddf" : "") + (PARTNER[d.id] ? " partner" : "") + (d.progs.length >= 2 ? " multi" : ""); });
     node.select("circle").attr("r", rOf);
     node.select("g.pie").each(function (d) {
       var r = rOf(d), has = !!E[d.id];
@@ -872,6 +892,9 @@
     if (i === 0) el.style.marginLeft = "8px";
     lg.appendChild(el);
   });
+  var pt = document.createElement("span");
+  pt.innerHTML = "<svg viewBox='0 0 36 36' style='width:12px;height:12px'><circle cx='18' cy='18' r='14' style='fill:var(--node);fill-opacity:.3;stroke:var(--fg);stroke-width:4;stroke-dasharray:8 6'/></svg>dashed outline = partner, not a co-funder";
+  lg.appendChild(pt);
   var h = document.createElement("span");
   h.innerHTML = "<svg viewBox='0 0 36 36' style='width:12px;height:12px'><circle cx='18' cy='18' r='14' style='fill:var(--node);fill-opacity:.18;stroke:var(--node);stroke-width:4'/></svg>faint = endowment not found";
   lg.appendChild(h);
