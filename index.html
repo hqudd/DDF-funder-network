@@ -777,6 +777,8 @@
       // Zoom to the clicked node and its neighbors.
       var near = {}; near[d.id] = 1;
       edges.forEach(function (e) { if (e.source.id === d.id || e.target.id === d.id) { near[e.source.id] = 1; near[e.target.id] = 1; } });
+      // Leave DDF out of the zoom box so the view can zoom in further; its links run off the edge toward the center.
+      if (d.id !== "DDF" && Object.keys(near).length > 2) delete near.DDF;
       fitTo(near);
       showDetail("<h2>" + esc(nameOf(d.id)) + "</h2><div class='m'>Endowment " + en + site + "</div><div class='m'><b class='pc'>" + d.progs.length + "</b> program" + (d.progs.length === 1 ? "" : "s") + " with DDF</div>" + progRows(d.progs));
     } else {
