@@ -1044,7 +1044,7 @@
       if (ty !== "funder") pie = [pie[0]];
       d3.select(this).selectAll("path").data(pie).join("path")
         .attr("d", ty === "partner" ? function () { var R = r * 1.35; return "M0," + (-R) + "L" + R + ",0L0," + R + "L" + (-R) + ",0Z"; } :
-          ty === "grantee" ? function () { var R = r * 1.6, x = R * 0.866; return "M0," + (-R) + "L" + x + "," + (R / 2) + "L" + (-x) + "," + (R / 2) + "Z"; } : arc)
+          ty === "grantee" ? function () { var R = r * 1.12, x = R * 0.866; return "M0," + (-R) + "L" + x + "," + (R / 2) + "L" + (-x) + "," + (R / 2) + "Z"; } : arc)
         .attr("class", has ? null : "faint")
         .style("fill", function (a) { return a.data === "DDF" ? "var(--fg)" : COLOR[a.data]; })
         .style("fill-opacity", has ? 0.92 : 0.18)
