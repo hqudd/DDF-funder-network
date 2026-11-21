@@ -72,6 +72,9 @@
   .node text { font: 12px var(--font); fill: #fff; pointer-events: none; paint-order: stroke; stroke: var(--halo); stroke-width: 3px; stroke-linejoin: round; }
   .node.ddf text, .node.multi text { font-weight: 600; }
   .node text.off { display: none; }
+  /* A clicked node keeps a white bold label; its neighbors' labels go light gray and thin. */
+  svg.haspick .node.hot:not(.picked) text { fill: #c9ccd1 !important; font-weight: 300 !important; }
+  svg.haspick .node.picked text { fill: #fff !important; font-weight: 700 !important; }
   .dim { opacity: .12 !important; }
   .node.hot text { font-weight: 500; }
   .edge.hot { opacity: .45; stroke: var(--edge); }
@@ -692,6 +695,7 @@
     else if (picked.kind === "node") { var d = nodes.filter(function (n) { return n.id === picked.id; })[0]; if (d) focusOn(d); else clearFocus(); }
     else { var e = edges.filter(function (x) { return x.key === picked.key; })[0]; if (e) focusLink(e); else clearFocus(); }
     node.classed("picked", function (d) { return !!picked && picked.kind === "node" && picked.id === d.id; });
+    svg.classed("haspick", !!picked && picked.kind === "node");
     labels();
   }
   function progRows(ps, pid) {
