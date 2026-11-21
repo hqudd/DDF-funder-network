@@ -610,7 +610,7 @@
   IDEAS.forEach(function (d) {
     var b = document.createElement("button");
     b.className = "chip idea"; b.type = "button"; b.setAttribute("data-i", d[0]);
-    b.innerHTML = "<i style='background:" + COLOR[d[1]] + "'></i>" + esc(d[0]) + " <span class='n'>" + (CNT[d[0]] || 0) + "</span>";
+    b.innerHTML = "<i style='background:" + COLOR[d[1]] + "'></i>" + esc(d[0]);
     if (!CNT[d[0]]) { b.disabled = true; b.title = "No co-funded program found for this idea"; }
     b.addEventListener("click", function () { onI[d[0]] = !onI[d[0]]; syncChips(); if (!syncPick()) update(); });
     ideaBox.appendChild(b);
