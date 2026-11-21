@@ -175,7 +175,8 @@
   .tb:focus-visible, .li-btn:focus-visible, .back:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .zoom { position: absolute; top: 44px; right: 8px; display: flex; flex-direction: column; gap: 4px; z-index: 6; }
   .zoom button { width: 36px; height: 36px; font: 500 18px/1 var(--font); color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; cursor: pointer; padding: 0; }
-  .zoom button.rs { font-size: 11px; }
+  .zoom { align-items: flex-end; }
+  .zoom button.rs { font-size: 12px; width: 64px; background: var(--ctl-bg); }
   .zoom button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .stage svg { cursor: grab; user-select: none; -webkit-user-select: none; }
   #empty { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; color: var(--muted); font-size: 13px; }
@@ -205,14 +206,14 @@
   </header>
   <div class="controls">
     <div class="grp" id="progs" role="group" aria-label="DDF program"></div>
-    <div class="grp pk"><label for="pick">Program</label><select id="pick" aria-label="Highlight a program"></select></div>
+    <div class="grp pk"><label for="pick">Grant Programs</label><select id="pick" aria-label="Highlight a program"></select></div>
     <div class="grp yr"><button type="button" class="chip" id="play" aria-label="Play timeline">&#9654; Play</button><output id="y0v"></output><div class="rng"><div class="rtrack"></div><div class="rfill" id="rfill"></div><input type="range" id="ys" min="0" max="0" step="1" value="0" aria-label="Start year"><input type="range" id="ye" min="0" max="0" step="1" value="0" aria-label="End year"></div><output id="y1v"></output></div>
   </div>
   <div class="stage">
     <div class="gwrap">
     <svg id="g" viewBox="0 0 1240 940" role="img" aria-label="Network of funders that have co-funded programs with the Doris Duke Foundation"></svg>
     <div class="tops"><button type="button" class="tb" id="bf" aria-pressed="false"></button><button type="button" class="tb" id="bp" aria-pressed="false"></button></div>
-    <div class="zoom" role="group" aria-label="Zoom"><button type="button" id="zin" aria-label="Zoom in">+</button><button type="button" id="zout" aria-label="Zoom out">&minus;</button><button type="button" id="zrs" class="rs" aria-label="Reset zoom">Reset</button></div>
+    <div class="zoom" role="group" aria-label="Zoom"><button type="button" id="zrs" class="rs" aria-label="Reset zoom">Reset</button><button type="button" id="zin" aria-label="Zoom in">+</button><button type="button" id="zout" aria-label="Zoom out">&minus;</button></div>
     <div id="yrmark" hidden aria-hidden="true"></div>
     <div id="tip" hidden></div>
     <div id="empty">No programs match these filters.</div>
@@ -465,8 +466,7 @@
   function syncPick() {
     var prev = pick.value;
     while (pick.options.length) pick.remove(0);
-    var onK = PROGRAMS.filter(function (k) { return on[k]; });
-    pick.add(new Option(onK.length === PROGRAMS.length ? "All" : onK.length ? onK.join(" & ") : "None", ""));
+    pick.add(new Option("All", ""));
     P.slice().sort(function (a, b) { return a.n.localeCompare(b.n); }).forEach(function (p) {
       if (on[p.pr]) pick.add(new Option(p.n + " (" + p.pr + ", " + p.y + ", " + fmt(p.amt) + ")", p.n));
     });
@@ -828,7 +828,7 @@
     var nf = nodes.length ? nodes.length - 1 : 0;
     curAct = act;
     bf.textContent = nf + " funder" + (nf === 1 ? "" : "s");
-    bp.textContent = act.length + " program" + (act.length === 1 ? "" : "s");
+    bp.textContent = act.length + " grant program" + (act.length === 1 ? "" : "s");
     document.getElementById("empty").style.display = act.length ? "none" : "flex";
 
     link = gE.selectAll("line").data(edges, function (e) { return e.key; }).join("line")
