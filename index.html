@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>DDF Funders Network</title>
+<title>DDF Big Ideas: Arts &amp; Culture, Health &amp; Well-being, Nature, Building Bridges</title>
 <style>
   /* Layout: sticky control bar, one full-width graph, a detail card for the tapped item, then an About disclosure. */
   :root {
@@ -19,13 +19,13 @@
     --card-bg: #ffffff;
     --ctl-bg: #ebecee;
     --halo: #6b7280;
-    --c-arts: #FF0080; --c-child: #D9A8FF; --c-env: #FF452E; --c-med: #FF1AFF;
+    --c-arts: #FF0080; --c-child: #D9A8FF; --c-env: #FF452E; --c-med: #FF1AFF; --c-bb: #FFB000;
     --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #14171b; --fg: #e7e9ec; --muted: #9aa3ad; --edge: #7b8590; --edge2: #5d6670;
-      --c-arts: #FF0080; --c-child: #D9A8FF; --c-env: #FF452E; --c-med: #FF1AFF;
+      --c-arts: #FF0080; --c-child: #D9A8FF; --c-env: #FF452E; --c-med: #FF1AFF; --c-bb: #FFB000;
       --node: #aab2bc; --accent: #5eead4; --line: #262b31; --card-bg: #1d2227; --ctl-bg: #1f242a; --halo: #3a4149;
       color-scheme: dark;
     }
@@ -34,7 +34,7 @@
   :root[data-theme="dark"] #yrmark { color: #3a4149; }
   :root[data-theme="dark"] {
     --bg: #14171b; --fg: #e7e9ec; --muted: #9aa3ad; --edge: #7b8590; --edge2: #5d6670;
-    --c-arts: #FF0080; --c-child: #D9A8FF; --c-env: #FF452E; --c-med: #FF1AFF;
+    --c-arts: #FF0080; --c-child: #D9A8FF; --c-env: #FF452E; --c-med: #FF1AFF; --c-bb: #FFB000;
     --node: #aab2bc; --accent: #5eead4; --line: #262b31; --card-bg: #1d2227; --ctl-bg: #1f242a; --halo: #3a4149;
     color-scheme: dark;
   }
@@ -47,7 +47,11 @@
   }
   .wrap { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
   header { display: flex; flex-wrap: wrap; justify-content: center; text-align: center; align-items: baseline; gap: 6px 24px; }
-  h1 { font-size: clamp(26px, 7vw, 40px); font-weight: 600; margin: 0; letter-spacing: -0.02em; line-height: 1.15; }
+  h1 span { white-space: nowrap; }
+  h1 .ma { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; text-decoration-color: transparent; }
+  h1 .ma:hover, h1 .ma:focus-visible { text-decoration-color: currentColor; }
+  #detail h3.ah { font-size: 13px; margin: 12px 0 4px; }
+  h1 { font-size: clamp(24px, 6vw, 34px); font-weight: 600; margin: 0; letter-spacing: -0.02em; line-height: 1.15; }
   header p { margin: 0; color: var(--muted); font-size: 13px; }
   .stage { display: flex; gap: 12px; align-items: flex-start; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .gwrap { position: relative; flex: 1 1 auto; min-width: 0; }
@@ -58,6 +62,12 @@
   .hit { stroke: transparent; stroke-width: 16px; fill: none; cursor: pointer; }
   .node circle { fill: var(--bg); stroke: var(--bg); stroke-width: 1.5; cursor: pointer; }
   .node .pie path { pointer-events: none; }
+  /* Partners (not co-funders) are drawn as diamonds. */
+  /* Grantees (not co-funders) are drawn as upward triangles. */
+  .node.partner circle:not(.tap), .node.grantee circle:not(.tap) { display: none; }
+  .node.partner .pie path, .node.grantee .pie path { stroke-linejoin: round; }
+  .node.partner.phot .pie path, .node.partner.picked .pie path,
+  .node.grantee.phot .pie path, .node.grantee.picked .pie path { stroke: var(--accent) !important; stroke-width: 2.5px !important; }
   /* Program view: highlighted funders get a ring, and faint ones (no endowment found) fill in so they do not look dimmed. */
   .node.phot circle:not(.tap) { stroke: var(--accent); stroke-width: 2.5px; }
   .node.phot .pie path.faint { fill-opacity: .65 !important; }
@@ -111,12 +121,13 @@
   #detail li { border-top: 1px solid var(--line); padding-top: 8px; }
   #detail li b.n { font-weight: 600; }
   #detail .plink { font: inherit; font-weight: 600; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+  #detail h2 .plink { font-weight: inherit; }
   #detail .plink:hover, #detail .plink:focus-visible { text-decoration: underline; }
   #detail a { color: var(--accent); text-decoration: none; }
   #detail a:hover, #detail a:focus-visible { text-decoration: underline; }
   #detail .close { position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); font: 16px/1 var(--font); cursor: pointer; }
   #detail .close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  #yrmark { position: absolute; top: 6px; left: 12px; z-index: 0; pointer-events: none; font: 50px/1 Helvetica, "Helvetica Neue", Arial, sans-serif; color: #d4d6da; font-variant-numeric: tabular-nums; }
+  #yrmark { position: absolute; bottom: 8px; left: 12px; z-index: 0; pointer-events: none; font: 50px/1 Helvetica, "Helvetica Neue", Arial, sans-serif; color: #d4d6da; font-variant-numeric: tabular-nums; }
   #yrmark[hidden] { display: none; }
   .gwrap svg { position: relative; z-index: 1; }
   #tip { position: absolute; z-index: 8; max-width: 300px; pointer-events: none; background: var(--card-bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 12px; line-height: 1.45; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
@@ -150,6 +161,10 @@
   .controls .grp { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
   .chip { font: inherit; font-size: 12px; color: var(--muted); background: transparent; border: 1px solid var(--line); padding: 4px 10px; cursor: pointer; border-radius: 999px; white-space: nowrap; }
   .chip[aria-pressed="true"] { color: var(--bg); background: var(--fg); border-color: var(--fg); }
+  #ideas { flex: 1 1 100%; }
+  #ideas .ilab { color: var(--fg); margin-right: 2px; white-space: nowrap; }
+  .chip.idea .n { opacity: .65; margin-left: 2px; font-variant-numeric: tabular-nums; }
+  .chip[disabled] { border-style: dashed; opacity: .6; cursor: default; }
   .chip:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   select { font: inherit; font-size: 12px; color: var(--fg); background: var(--bg); border: 1px solid var(--line); padding: 3px 6px; }
   .grp.yr { flex: 1 1 280px; min-width: 0; flex-wrap: nowrap; }
@@ -168,12 +183,25 @@
   #play { min-width: 76px; color: var(--fg); }
   .grp.pk { flex: 1 1 260px; min-width: 0; flex-wrap: nowrap; }
   .grp.pk label { white-space: nowrap; }
+  #ideas > .grp.pk { flex: 0 1 auto; margin-left: auto; }
+  #ideas > .grp.pk select { width: 340px; max-width: 100%; }
   #pick { flex: 1 1 auto; min-width: 0; width: 100%; text-overflow: ellipsis; }
   .tops { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; z-index: 6; }
   .tb { font: inherit; font-size: 12px; color: var(--fg); background: var(--ctl-bg); border: 1px solid var(--line); height: 36px; padding: 0 12px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
   .tb:hover { color: var(--fg); }
   .tb[aria-pressed="true"] { color: var(--fg); border-color: var(--fg); }
   .tb:focus-visible, .li-btn:focus-visible, .back:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  /* Type toggles: iOS-like switches in the top-left corner of the graph. */
+  .types { position: absolute; top: 8px; left: 8px; z-index: 6; display: flex; flex-direction: column; gap: 4px; padding: 6px 8px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; font-size: 12px; color: var(--fg); }
+  .types .row { display: flex; align-items: center; gap: 7px; }
+  .types .row svg { width: 12px; height: 12px; flex: none; }
+  .types .row svg * { fill: var(--node); fill-opacity: .85; }
+  .types .row.off span, .types .row.off svg { opacity: .45; }
+  .sw { position: relative; flex: none; width: 30px; height: 18px; padding: 0; border: 0; border-radius: 999px; background: var(--line); cursor: pointer; transition: background .15s; }
+  .sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.3); transition: transform .15s; }
+  .sw[aria-checked="true"] { background: var(--accent); }
+  .sw[aria-checked="true"]::after { transform: translateX(12px); }
+  .sw:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .zoom { position: absolute; top: 52px; right: 8px; display: flex; flex-direction: column; gap: 4px; z-index: 6; }
   .zoom button { width: 36px; height: 36px; font: 500 18px/1 var(--font); color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; cursor: pointer; padding: 0; }
   .zoom { align-items: flex-end; }
@@ -188,10 +216,19 @@
     .wrap { gap: 10px; }
     .controls { gap: 8px 16px; padding: 8px 10px; margin-inline: -4px; border-radius: 8px; }
     .controls .grp#progs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
-    .controls .grp#progs::-webkit-scrollbar { display: none; }
+    .controls .grp#progs::-webkit-scrollbar, .controls .grp#ideas::-webkit-scrollbar { display: none; }
+    .controls .grp#ideas { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
     .grp.pk { flex-basis: 100%; }
     .grp.yr { flex-basis: 100%; }
     .zoom button { width: 32px; height: 32px; }
+    .tb { height: 30px; padding: 0 8px; font-size: 11px; }
+    .zoom { top: 44px; }
+    .types { top: 6px; left: 6px; gap: 2px; padding: 4px 6px; font-size: 11px; }
+    .types .row { gap: 5px; }
+    .types .row svg { width: 10px; height: 10px; }
+    .sw { width: 26px; height: 16px; }
+    .sw::after { width: 12px; height: 12px; }
+    .sw[aria-checked="true"]::after { transform: translateX(10px); }
     .stage { flex-direction: column; gap: 0; align-items: stretch; }
     .gwrap { width: 100%; }
     .gwrap svg { height: min(52vh, 440px); }
@@ -203,18 +240,20 @@
 
 <div class="wrap">
   <header>
-    <h1>DDF Funders Network</h1>
+    <h1>DDF Big Ideas: <span><button type="button" class="ma" data-a="Arts &amp; Culture" style="color:var(--c-arts)" title="Show only Arts &amp; Culture Big Ideas">Arts &amp; Culture</button></span>, <span><button type="button" class="ma" data-a="Health &amp; Well-being" style="color:var(--c-child)" title="Show only Health &amp; Well-being Big Ideas">Health &amp; Well-being</button></span>, <span><button type="button" class="ma" data-a="Nature" style="color:var(--c-env)" title="Show only Nature Big Ideas">Nature</button></span>, <span><button type="button" class="ma" data-a="Building Bridges" style="color:var(--c-bb)" title="Show only Building Bridges Big Ideas">Building Bridges</button></span></h1>
   </header>
   <div class="controls">
-    <div class="grp" id="progs" role="group" aria-label="DDF program"></div>
-    <div class="grp pk"><label for="pick">Grant Programs</label><select id="pick" aria-label="Highlight a program"></select></div>
-    <div class="grp yr"><button type="button" class="chip" id="play" aria-label="Play timeline">&#9654; Play</button><output id="y0v"></output><div class="rng"><div class="rtrack"></div><div class="rfill" id="rfill"></div><input type="range" id="ys" min="0" max="0" step="1" value="0" aria-label="Start year"><input type="range" id="ye" min="0" max="0" step="1" value="0" aria-label="End year"></div><output id="y1v"></output></div>
+    <div class="grp" id="progs" hidden></div>
+    <div class="grp" id="ideas" role="group" aria-label="DDF Big Ideas"></div>
+    <div class="grp pk"><label for="pick">Grant Programs</label><select id="pick" style="max-width:420px" aria-label="Highlight a program"></select></div>
+    <div class="grp yr" style="display:none"><button type="button" class="chip" id="play" aria-label="Play timeline">&#9654; Play</button><output id="y0v"></output><div class="rng"><div class="rtrack"></div><div class="rfill" id="rfill"></div><input type="range" id="ys" min="0" max="0" step="1" value="0" aria-label="Start year"><input type="range" id="ye" min="0" max="0" step="1" value="0" aria-label="End year"></div><output id="y1v"></output></div>
   </div>
   <div class="stage">
     <div class="gwrap">
-    <svg id="g" viewBox="0 0 1240 940" role="img" aria-label="Network of funders that have co-funded programs with the Doris Duke Foundation"></svg>
+    <svg id="g" viewBox="0 0 1240 940" role="img" aria-label="Network of funders and partners that have worked on programs with the Doris Duke Foundation"></svg>
     <div class="tops"><button type="button" class="tb" id="bf" aria-pressed="false"></button><button type="button" class="tb" id="bp" aria-pressed="false"></button></div>
-    <div class="zoom" role="group" aria-label="Zoom"><button type="button" id="zrs" class="rs" aria-label="Reset zoom">Reset</button><button type="button" id="zin" aria-label="Zoom in">+</button><button type="button" id="zout" aria-label="Zoom out">&minus;</button></div>
+    <div class="types" id="types" role="group" aria-label="Show node types"></div>
+    <div class="zoom" role="group" aria-label="Zoom"><button type="button" id="zrs" class="rs" aria-label="Reset to the starting view">Reset</button><button type="button" id="zin" aria-label="Zoom in">+</button><button type="button" id="zout" aria-label="Zoom out">&minus;</button></div>
     <div id="yrmark" hidden aria-hidden="true"></div>
     <div id="tip" hidden></div>
     <div id="empty">No programs match these filters.</div>
@@ -226,7 +265,7 @@
     <details class="about" id="about">
       <summary>About this data</summary>
       <div class="body">
-        <p class="note">Each dot represents a funder that has backed a program with the Doris Duke Foundation (DDF). Node color is the DDF program, split when a funder backs more than one. Node size is the funder's endowment (assets under management for FY23, or total assets from tax filings, 2023-2024; faint nodes had no figure found). Line width is the combined size of the programs two funders share, so it is not either funder's own contribution, which is mostly undisclosed. Amounts mean different things by program (a pledge, a goal, a first round, a cumulative total); each program's detail card says which. Dotted lines mean no amount was found. Faint lines connect funders that co-fund the same program; they show shared membership, not a direct relationship. Each group clusters together. Drag a node to move it. Years are when a program was announced or reported. The two handles set the first and last year shown; Play moves the end handle forward. Research as of Nov 12, 2026.</p>
+        <p class="note">Each dot represents a funder that has backed a program with the Doris Duke Foundation (DDF), or a partner that works on one. Partners, such as fiscal sponsors, organizers, administrators, pilot sites and grant recipients, are not co-funders. Funders are circles, partners are diamonds, and grantees (organizations that received a grant from a program) are triangles; grantees are hidden by default, and the switches at the top left show or hide each type. Node color is the DDF area (Arts & Culture, Health & Well-being, Nature) or Building Bridges, split when a funder works in more than one. Each grant program is filed under one or more of the Big Ideas on DDF's website, and the chips filter by idea. Click an area in the title to show only its Big Ideas. New Platforms for Diverse Voices is shown with DDF's Building Bridges program. DDF's idea pages name some of these programs; the other placements are our own reading. Some programs, such as Racial Equity in Clinical Equations and the creative labor grants, are funded by DDF alone; they show partners and grantees rather than co-funders. Node size is the funder's endowment (assets under management for FY23, or total assets from tax filings, 2023-2024; faint nodes had no figure found). Line width is the combined size of the programs two funders share, so it is not either funder's own contribution, which is mostly undisclosed. Amounts mean different things by program (a pledge, a goal, a first round, a cumulative total); each program's detail card says which. Dotted lines mean no amount was found. Faint lines connect funders that co-fund the same program; they show shared membership, not a direct relationship. Each group clusters together. Drag a node to move it. Years are when a program was announced or reported. Research as of Nov 12, 2026.</p>
       </div>
     </details>
     <a class="how" href="how-claude-built-this.html">How Claude built this network visualization?</a>
@@ -239,13 +278,14 @@
   // Programs with DDF as a funder. pr = DDF program. amt = total program size in $M (null = not found).
   // basis says what the amount is. src is the source page.
   var P = [
-    { n: "Humanity AI", pr: "Arts", y: 2025, amt: 500, basis: "$500M coalition commitment over five years",
+    { n: "Humanity AI", grantees: {"AI Now Institute": "Research/policy on accountability for AI impacts", "Center for Democracy and Technology": "Civil rights and liberties in AI governance", "Council on Foreign Relations (LEAD AI)": "Policy analysis and debate on AI issues", "DAIR Institute": "Community-led AI research networks", "Partnership on AI": "Multi-sector forum for public-benefit AI", "TechEquity": "Tech accountability for economic harms of AI", "Kinfolk Tech": "Art and technology for community memory", "Pulitzer Center": "Training journalists to report on AI", "Student Defense": "SHAPE AI guidance for under-resourced schools", "Data & Society": "Leads $3M AI Civics program", "Digital Public Library of America": "Anchor partner, AI Civics library conversations"}, pr: "Arts", y: 2025, amt: 500, basis: "$500M coalition commitment over five years",
       src: "https://www.macfound.org/press/press-releases/humanity-ai-commits-500-million-to-build-a-people-centered-future-for-ai",
-      f: ["DDF","Ford","Lumina","Kapor","MacArthur","Mellon","Mozilla","Omidyar","Packard","Siegel Endowment"] },
-    { n: "Artists Make Technology", pr: "Arts", y: 2026, amt: 11, basis: "$11M three-year initiative; $6.5M committed at launch",
+      f: ["DDF","Ford","Lumina","Kapor","MacArthur","Mellon","Mozilla","Omidyar","Packard","Siegel Endowment","Rockefeller Philanthropy Advisors"],
+      roles: { "Rockefeller Philanthropy Advisors": "Fiscal sponsor; manages the pooled fund" } },
+    { n: "Artists Make Technology", grantees: {"Albany Park Theater Project": "First-cohort grant, art and technology project", "Center for Cultural Vibrancy": "First-cohort grant, art and technology project", "DeltaARTS": "First-cohort grant, art and technology project", "Extreme Lengths Productions": "First-cohort grant, art and technology project", "HowlRound Theatre Commons": "First-cohort grant, art and technology project", "STUDIO F.A.C.E.": "First-cohort grant, art and technology project", "Sweat Variant": "First-cohort grant, art and technology project", "Balletic Athletic": "First-cohort grant, art and technology project", "EMPAC at Rensselaer Polytechnic Institute": "First-cohort grant, art and technology project", "SLIPPAGE (Northwestern University)": "First-cohort grant, art and technology project"}, pr: "Arts", y: 2026, amt: 11, basis: "$11M three-year initiative; $6.5M committed at launch",
       src: "https://www.dorisduke.org/news/doris-duke-foundation-and-mozilla-foundation-announce-usd6-5m-commitment-to-ensure-performing-artists-are-at-the-center-of-technology-innovation",
       f: ["DDF","Mozilla","Hewlett","Ford","MacArthur","Omidyar"] },
-    { n: "DDF and Ford technology grants", pr: "Arts", y: 2026, amt: 4, basis: "More than $4M over five years",
+    { n: "DDF and Ford technology grants", grantees: {"Junebug Productions": {"note": "AI platform for Black theater management", "web": "https://www.junebugproductions.org/"}, "Kinetic Light": {"note": "R&D of multisensory access technology", "web": "https://kineticlight.org/"}, "New York Live Arts (The Healing Project)": {"note": "Art, technology and advocacy for healing", "web": "https://newyorklivearts.org/"}, "Open Circle Theatre": {"note": "VitaNova, accessible interactive hybrid musical", "web": "https://opencircletheatre.org/"}, "Producer Hub": {"note": "Accessible tools for remote real-time jazz (Marcus Roberts)", "web": "https://www.producerhub.org/"}, "SOZO Impact": {"note": "EARTH.SPEAKS XR platform with Osage Nation (joint grant)", "web": "https://sozomedia.com/earthspeaks"}, "Relaxed Animals": "EARTH.SPEAKS XR platform (joint grant with SOZO)"}, pr: "Arts", y: 2026, amt: 4, basis: "More than $4M over five years",
       src: "https://www.americantheatre.org/2026/07/06/duke-partners-with-ford-to-fund-performing-arts-tech-innovation/",
       f: ["DDF","Ford"] },
     { n: "Mosaic Network and Fund", pr: "Arts", y: 2020, amt: 4.5, basis: "First-round grants (2020); funder list is the fund's full roster",
@@ -253,28 +293,142 @@
       f: ["DDF","Mellon","Ford","Bloomberg","Surdna","Howard Gilman","Booth Ferris","Lambent","Altman","Laurie M. Tisch Fund","Miranda Family Fund","NY Community Trust","Lily Auchincloss","Matisse Foundation","Nathan Cummings","Deutsche Bank Americas","Mertz Gilmore","Stavros Niarchos","Rockefeller Brothers","Cullman Foundation","Grantmakers in the Arts","David Rockefeller Fund","Harman Family","MacKenzie Scott","Jerome","Dreyfus Foundation"] },
     { n: "Artist Relief", pr: "Arts", y: 2020, amt: 10, basis: "Initial $10M: $5M Mellon seed plus $5M from 23 foundations",
       src: "https://www.joanmitchellfoundation.org/uploads/pdf/Artist-Relief_Press-Release-20200408.pdf",
-      f: ["DDF","Ford","Mellon","Warhol Foundation","Mike Kelley Foundation","de Kooning Foundation","7G","Gottlieb Foundation","Amazon Literary","Arison Arts","Emily Hall Tremaine","Frankenthaler","Jerome","Joan Mitchell","Kraus Family","Knight","Neiman Foundation","Metabolic Studio","Pritzker Pucker","Salomon Family","Rauschenberg Foundation","Hostetler-Wrigley","Teiger Foundation","Wallace Foundation"] },
-    { n: "MAP Fund regranting (DDF + Mellon, since 2008)", pr: "Arts", y: 2008, amt: 28.6, basis: "Cumulative DDF and Mellon regranting since 2008",
-      src: "https://mapfund.org/about/history", f: ["DDF","Mellon"] },
-    { n: "National Dance Project (reported 2025)", pr: "Arts", y: 2025, amt: null, basis: "Amount not found", src: null, f: ["DDF","Mellon"] },
+      f: ["DDF","Ford","Mellon","Warhol Foundation","Mike Kelley Foundation","de Kooning Foundation","7G","Gottlieb Foundation","Amazon Literary","Arison Arts","Emily Hall Tremaine","Frankenthaler","Jerome","Joan Mitchell","Kraus Family","Knight","Neiman Foundation","Metabolic Studio","Pritzker Pucker","Salomon Family","Rauschenberg Foundation","Hostetler-Wrigley","Teiger Foundation","Wallace Foundation","Academy of American Poets","Artadia","Creative Capital","Foundation for Contemporary Arts","MAP Fund","YoungArts","United States Artists","Americans for the Arts","Yancey Consulting"],
+      roles: { "Academy of American Poets": "Organizer", "Artadia": "Organizer", "Creative Capital": "Organizer", "Foundation for Contemporary Arts": "Organizer", "MAP Fund": "Organizer", "YoungArts": "Organizer", "United States Artists": "Organizer", "Americans for the Arts": "Research partner", "Yancey Consulting": "Documented Artist Relief and wrote recommendations afterward" } },
+    { n: "MAP Fund regranting (DDF + Mellon, 2008-2024)", pr: "Arts", y: 2008, amt: 28.6, basis: "DDF $21.8M (2008-2024) plus Mellon $6.8M (2010-2024); both ended in 2024",
+      src: "https://mapfund.org/about/history", f: ["DDF","Mellon","MAP Fund"],
+      roles: { "MAP Fund": "Operates the regranting program" } },
+    { n: "National Dance Project (reported 2025)", grantees: {"Rosy Simas Danse": "2025 NDP Production Grant: A:gajë:gwah dësa'nigöëwë:nye:'", "Sweat Variant": "2025 NDP Production Grant: adaku, part 2", "Jamal Jackson Dance Company": "2025 NDP Production Grant: Adultification", "MoBBallet": "2025 NDP Production Grant: Harlem Renaissance the Ballet: Chapter I", "A.I.M by Kyle Abraham": "2025 NDP Production Grant: I Grieve Different", "Jacob Jonas The Company": "2025 NDP Production Grant: Nature Sounds While the IV Drips", "The Love Makers Company": "2025 NDP Production Grant: Post-Failure Potentials", "DANCE IQUAIL!": "2025 NDP Production Grant: Resent(ME)nt", "Tere O'Connor Dance": "2025 NDP Production Grant: The Lace", "Rosie Herrera Dance Theatre": "2025 NDP Production Grant: Tropical Depression", "Escuela de Bomba y Plena Tata Cepeda": "2025 NDP Production Grant: Zafra"}, pr: "Arts", y: 2025, amt: 2, basis: "$2M in 2025 NDP production grants for 20 projects", src: "https://www.nefa.org/node/14279", f: ["DDF","Mellon","New England Foundation for the Arts"],
+      roles: { "New England Foundation for the Arts": "Runs the National Dance Project" } },
     { n: "Tribal Nations Conservation Pledge", pr: "Environment", y: 2023, amt: 102.5, basis: "$102.5M pledge over five years; DDF's share about $32M",
       src: "https://www.philanthropy.com/article/15-grant-makers-pool-102-5-million-for-indigenous-led-conservation-efforts",
-      f: ["DDF","Alaska Conservation","Christensen Fund","Decolonizing Wealth","Moore","Grousemont","J.M. Kaplan Fund","Packard","Resources Legacy Fund","Re:wild","Walton Family","Water Foundation","Wilburforce","Hewlett","Wyss"] },
-    { n: "Catalyst Fund", pr: "Environment", y: 2019, amt: 2.5, basis: "Fund total as reported with the 2019 grants",
-      src: "https://landscapeconservation.org/wp-content/uploads/2017/12/Catalyst-Fund_2019-Grants-Descriptions_Final.pdf", f: ["DDF","Hewlett"] },
-    { n: "OPT-In for Families", pr: "Child Well-being", y: 2024, amt: 33, basis: "$33M over three years",
+      f: ["DDF","Alaska Conservation","Christensen Fund","Decolonizing Wealth","Moore","Grousemont","J.M. Kaplan Fund","Packard","Resources Legacy Fund","Re:wild","Walton Family","Water Foundation","Wilburforce","Hewlett","Wyss","Native Americans in Philanthropy","Biodiversity Funders Group"],
+      roles: { "Native Americans in Philanthropy": "Co-announced the pledge; Hewlett grants for the collaborative go to it", "Biodiversity Funders Group": "Co-announced the pledge" } },
+    { n: "Catalyst Fund", grantees: {"Blackfeet Conservation Collaborative": "Blackfeet-controlled conservation areas, coordination", "Chilkat Valley Working Group": "Strategic plans, regenerative economy training", "Climate Science Alliance Tribal Working Group": "Tribal climate resilience workplan", "Delmarva Restoration and Conservation Network": "Coordinator and action plan", "Heart of Maryland Conservation Alliance": "Coordinator, website, action plan, summit", "High Divide Collaborative": "Full-time coordinator, fire and connectivity work", "Lake Superior Collaborative": "Coordinator, governance, action plan", "Metro Denver Nature Alliance": "Regional vision and equity strategy", "Northwest Boreal Landscape Conservation Cooperative": "Indigenous Leadership Working Group engagement", "Ocala to Osceola Wildlife Corridor Partnership": "Coordinator, priority plan, Sentinel Landscape", "San Juan-Chama Watershed Partnership": "Landowner outreach, restoration projects", "S'Klallam Territory Wildlife Monitoring and Conservation Partnership": "Wildlife camera network protocols", "Staying Connected Initiative": "Long-term funding model assessment", "Texas Hill Country Conservation Network": "Coordinator, action plan, online presence", "Algonquin to Adirondacks Collaborative": "2024 round, $25K", "Alliance for the Mystic River Watershed": "2024 round, $25K", "Bristol Bay Guardians": "2024 round, $25K", "Green Heart of the Everglades": "2024 round, $25K", "Kodiak Archipelago Regional Leadership Forum": "2024 round, $25K", "La Red de las Islas del Cielo": "2024 round, $25K", "Lowcountry Native American Heritage Corridor Coalition": "2024 round, $25K", "Metrowest Conservation Alliance": "2024 round, $25K", "Piscataway Land Collaborative": "2024 round, $25K", "Pueblo Caja del Rio Coalition": "2024 round, $25K", "Ribbons of Life": "2024 round, $25K", "Russian River Confluence": "2024 round, $25K", "Southern Appalachian Landscape Conservation Coalition": "2024 round, $25K", "Wabanaki Commission on Land Stewardship": "2024 round, $25K", "Woodlands Partnership of Northwest Massachusetts": "2024 round, $25K"}, pr: "Environment", y: 2019, amt: 0.33, basis: "2019 round: 14 awards totaling about $331K; 2024 round: 15 awards, $375K; the fund reports more than $2.5M across 2019-2025",
+      src: "https://landscapeconservation.org/wp-content/uploads/2017/12/Catalyst-Fund_2019-Grants-Descriptions_Final.pdf", f: ["DDF","Hewlett","Network for Landscape Conservation"],
+      roles: { "Network for Landscape Conservation": "Administers the fund" } },
+    { n: "OPT-In for Families", pr: "Child Well-being", y: 2024, amt: 33, basis: "$33M over three years; four pilot sites (D.C., Kentucky, Oregon, South Carolina)",
       src: "https://dorisduke.org/news/doris-duke-foundation-launches-new-opt-in-for-families-initiative-to-refocus-the-child-welfare-system-on-prevention",
-      f: ["DDF","Duke Endowment","Aviv"] },
+      f: ["DDF","Duke Endowment","Aviv","D.C. Child and Family Services Agency","Oregon Department of Human Services","Kentucky Division of Prevention and Community Wellbeing","Chapin Hall","Harvard Kennedy School Government Performance Lab","Foster America","Think of Us","South Carolina Department of Social Services"],
+      roles: { "South Carolina Department of Social Services": "Pilot site", "D.C. Child and Family Services Agency": "Pilot site", "Oregon Department of Human Services": "Pilot site", "Kentucky Division of Prevention and Community Wellbeing": "Pilot site", "Chapin Hall": "Evaluation partner", "Harvard Kennedy School Government Performance Lab": "Technical assistance partner", "Foster America": "Technical assistance partner", "Think of Us": "Technical assistance partner" } },
     { n: "Think of Us, Audacious Project", pr: "Child Well-being", y: 2023, amt: 47.5, basis: "Audacious Project award, 2023",
       src: "https://www.insidephilanthropy.com/home/2024/5/22/seven-funders-working-to-improve-child-welfare-and-foster-care",
-      f: ["DDF","Casey","Hilton","Aviv","Audacious Project"] },
+      f: ["DDF","Casey","Hilton","Aviv","Audacious Project","Think of Us"],
+      roles: { "Think of Us": "Award recipient; leads the work" } },
     { n: "Collective to Strengthen Pathways for Health Research", pr: "Medical Research", y: 2024, amt: null, basis: "Amount not found",
       src: "https://www.dorisduke.org/news--insights/articles/revisiting-research-pathways",
       f: ["DDF","American Cancer Society","American Heart Assoc.","Burroughs Wellcome","Dana Foundation","Donaghue","Robertson","Susan G. Komen"] },
-    { n: "COVID-19 Fund to Retain Clinical Scientists", pr: "Medical Research", y: 2021, amt: 12.1, basis: "First round of grants to 22 medical schools",
+    { n: "COVID-19 Fund to Retain Clinical Scientists", grantees: {"Boston University School of Medicine": "Retain early-career clinical scientists affected by COVID-19", "Columbia University Vagelos College of Physicians and Surgeons": "Retain early-career clinical scientists affected by COVID-19", "Duke University": "Retain early-career clinical scientists affected by COVID-19", "Emory University": "Retain early-career clinical scientists affected by COVID-19", "Icahn School of Medicine at Mount Sinai": "Retain early-career clinical scientists affected by COVID-19", "Indiana University School of Medicine": "Retain early-career clinical scientists affected by COVID-19", "Michigan Medicine": "Retain early-career clinical scientists affected by COVID-19", "Northwestern University": "Retain early-career clinical scientists affected by COVID-19", "The Ohio State University": "Retain early-career clinical scientists affected by COVID-19", "Stanford University School of Medicine": "Retain early-career clinical scientists affected by COVID-19", "University of Alabama at Birmingham": "Retain early-career clinical scientists affected by COVID-19", "University of Arizona": "Retain early-career clinical scientists affected by COVID-19", "UC Davis School of Medicine": "Retain early-career clinical scientists affected by COVID-19", "University of Chicago": "Retain early-career clinical scientists affected by COVID-19", "University of North Carolina at Chapel Hill": "Retain early-career clinical scientists affected by COVID-19", "University of Pennsylvania / Children's Hospital of Philadelphia": "Retain early-career clinical scientists affected by COVID-19", "University of Pittsburgh": "Retain early-career clinical scientists affected by COVID-19", "UT Southwestern Medical Center": "Retain early-career clinical scientists affected by COVID-19", "University of Utah Health": "Retain early-career clinical scientists affected by COVID-19", "Vanderbilt University Medical Center / Meharry Medical College": "Retain early-career clinical scientists affected by COVID-19", "Washington University School of Medicine in St. Louis": "Retain early-career clinical scientists affected by COVID-19", "Yale University": "Retain early-career clinical scientists affected by COVID-19"}, pr: "Medical Research", y: 2021, amt: 12.1, basis: "First round of grants to 22 medical schools",
       src: "https://www.dorisduke.org/siteassets/news--insights/2021-press-releases/11.16.21-covid19-frcs-press-release.pdf",
-      f: ["DDF","American Heart Assoc.","Burroughs Wellcome","Templeton","Rita Allen","Walder"] }
+      f: ["DDF","American Heart Assoc.","Burroughs Wellcome","Templeton","Rita Allen","Walder"] },
+    { n: "Building Bridges Fellowship and Completion Fund", pr: "Building Bridges", y: 2024, amt: 1, basis: "$1M DDF grant over three years to Sundance Institute; Islamic Scholarship Fund is a partner and sits on the selection panel",
+      src: "https://www.sundance.org/blogs/doris-duke-foundation-announces-1m-grant-to-sundance-institute-expanding-commitment-to-uplifting-muslim-storytelling-with-new-building-bridges-fellowship-and-completion-fund/",
+      f: ["DDF","Sundance Institute","Islamic Scholarship Fund"],
+      roles: { "Sundance Institute": "Receives the grant and runs the program", "Islamic Scholarship Fund": "Partner; sits on the selection panel" } },
+    { n: "The Muslim House (MPAC Hollywood Bureau)", pr: "Building Bridges", y: 2024, amt: 1.4, basis: "$1.425M DDF grant over three years, part of a $6M set of grants (Jan 2024)",
+      src: "https://dorisduke.org/news--insights/articles/doris-duke-foundation-announces-$6m-effort-to-change-the-face-of-hollywood-at-sundance-film-festival",
+      f: ["DDF","MPAC Hollywood Bureau"],
+      roles: { "MPAC Hollywood Bureau": "Grant recipient; runs Muslim House events" } },
+    { n: "Building Bridges Documentary Fund", pr: "Building Bridges", y: 2024, amt: 4.5, basis: "$4.5M DDF grant over three years to the Center for Asian American Media, part of a $6M set of grants (Jan 2024)",
+      src: "https://dorisduke.org/news--insights/articles/doris-duke-foundation-announces-$6m-effort-to-change-the-face-of-hollywood-at-sundance-film-festival",
+      f: ["DDF","Center for Asian American Media"],
+      roles: { "Center for Asian American Media": "Grant recipient; launches the fund" } },
+    { n: "Islamic Scholarship Fund creative fellowship pilot", pr: "Building Bridges", y: 2024, amt: 0.1, basis: "$100K DDF grant to pilot a fellowship for emerging U.S. Muslim creatives (Jan 2024)",
+      src: "https://dorisduke.org/news--insights/articles/doris-duke-foundation-announces-$6m-effort-to-change-the-face-of-hollywood-at-sundance-film-festival",
+      f: ["DDF","Islamic Scholarship Fund"],
+      roles: { "Islamic Scholarship Fund": "Grant recipient; pilots the fellowship" } },
+    { n: "Youth and Families Forward (NYC)", grantees: {"The Alex House Project": "$100K over two years (2025)", "Blessings in Transformation": "$100K over two years (2025)", "Circle Up! Youth Restorative Justice Arts": "$100K over two years (2025)", "Dear Black Girl": "$100K over two years (2025)", "Freedom Youth Family Justice Center": "$100K over two years (2025)", "Her Village": "$100K over two years (2025)", "Inspiring Futures": "$100K over two years (2025)", "Justice for Families": "$100K over two years (2025)", "Multi Assistance Resource Centers": "$100K over two years (2025)", "PureLegacee": "$100K over two years (2025)", "Table of Kingz": "$100K over two years (2025)", "The Birthing Place Foundation": "$100K over two years (2025)", "Urban Fairies of Staten Island": "$100K over two years (2025)", "Voices of Women Organizing Project": "$100K over two years (2025)"}, pr: "Arts", y: 2018, amt: 6, basis: "Collaborative fund of seven foundations; $6M committed since 2018; $1.4M to 14 groups in 2025. One funder is not named in sources.",
+      src: "https://thenytrust.org/news/youth-and-families-forward-announces-1-4m-in-participatory-grantmaking-to-prevent-harmful-child-welfare-system-practices-in-new-york/",
+      f: ["DDF", "Hilton", "Ira W. DeCamp Foundation", "Pinkerton Foundation", "Redlich Horwitz Foundation", "NY Community Trust"] },
+    { n: "Racial Equity in Clinical Equations grants", grantees: {"American Academy of Pediatrics": "Race-conscious pediatric clinical guidance", "American Heart Assoc.": "Race in cardiovascular risk tools", "American Society of Hematology": "Care for Duffy-null associated neutrophil count", "Coalition to End Racism in Clinical Algorithms": "NYC safety-net hospitals replace race-adjusted algorithms", "National Academies of Sciences, Engineering, and Medicine": "Review of race and ethnicity in biomedical research"}, pr: "Arts", y: 2023, amt: 10, basis: "More than $10M in DDF grants to five organizations; Gordon and Betty Moore Foundation, CMSS and the National Academy of Medicine partnered on the launch summit",
+      src: "https://www.dorisduke.org/siteassets/news--insights/2023-press-releases/racial-equity-in-clinical-equations-release-final.pdf",
+      f: ["DDF", "Council of Medical Specialty Societies", "National Academy of Medicine"],
+      roles: {"Council of Medical Specialty Societies": "Launch summit partner", "National Academy of Medicine": "Launch summit partner"} },
+    { n: "Encoding Equity Alliance", pr: "Arts", y: 2024, amt: 3, basis: "$3M DDF grant over three years to CMSS to lead the alliance; $1M regranted to eight medical societies in 2025 (recipients not found)",
+      src: "https://cmss.org/?p=1198",
+      f: ["DDF", "Council of Medical Specialty Societies", "National Academy of Medicine"],
+      roles: {"Council of Medical Specialty Societies": "Leads the alliance; regrants to medical societies", "National Academy of Medicine": "Co-convened the 2024 meeting"} },
+    { n: "Creative Labor, Creative Conditions campaign", grantees: {"United States Artists": "$1.5M: policy alliance and financial literacy for artists", "Center for Cultural Innovation": "$1.5M: policy initiative on labor protections for artists"}, pr: "Arts", y: 2025, amt: 6.3, basis: "$6.3M DDF investment, including $1.5M each to United States Artists and the Center for Cultural Innovation; partners host events and campaign",
+      src: "https://www.dorisduke.org/news--insights/articles/2025-doris-duke-artist-awards-and-creative-labor/",
+      f: ["DDF", "DC Jazz Festival", "Aspen Art Museum", "One Nation One Project", "Creatives Rebuild NY", "IndieSpace", "HowlRound Theatre Commons"],
+      roles: {"DC Jazz Festival": "Co-hosts a policy convening", "Aspen Art Museum": "Co-hosts a policy convening", "One Nation One Project": "Campaign partner", "Creatives Rebuild NY": "Campaign partner", "IndieSpace": "Campaign partner", "HowlRound Theatre Commons": "Hosts the campaign conversations"} },
+    { n: "Creative labor grants (2026)", grantees: {"Artist Corporations Foundation": "Artist Corporation (A-Corp) advocacy and policy", "Artistic Freedom Initiative": "Artistic Freedom Monitor and artist network", "Pollinator.coop": "Artist-owned secure communication platform", "SOZO Impact": "Global Cultural Impact Hub", "Starfish Accelerator Foundation": "ROOT, open-source revenue-sharing tool", "Pangea World Theater": "Liberating Spaces coalitions"}, pr: "Arts", y: 2026, amt: 1, basis: "More than $1M in DDF grants to six organizations",
+      src: "https://www.dorisduke.org/news/doris-duke-foundation-announces-2026-artist-awards-and-new-grants-supporting-the-labor-of-making-art",
+      f: ["DDF"] },
+    { n: "Forest climate grants", grantees: {"American Forests": "Climate Learning Labs, urban forestry, federal forest policy", "Bipartisan Policy Center": "Farm and Forest Carbon Solutions initiative"}, pr: "Arts", y: 2018, amt: null, basis: "DDF grants for natural climate solutions in forests; amounts not stated. U.S. Climate Alliance states joined American Forests' Learning Labs.",
+      src: "https://americanforests.org/article/donor-profile-the-doris-duke-charitable",
+      f: ["DDF"] },
+    { n: "Split Rock Mountain land return", grantees: {"Ramapo Munsee Land Alliance": "Received Split Rock Mountain"}, pr: "Arts", y: 2023, amt: null, basis: "DDF funded the Land Conservancy of New Jersey's purchase of Split Rock Mountain, returned to the Ramapo Munsee Land Alliance; amount not stated",
+      src: "https://www.dorisduke.org/news/doris-duke-foundation-and-partners-announce-over-100-million-for-tribal-led-conservation",
+      f: ["DDF", "Land Conservancy of New Jersey"],
+      roles: {"Land Conservancy of New Jersey": "Bought the land"} }
   ];
+  // Partners are grant recipients and program partners, not co-funders.
+  // DDF's Big Ideas, each under an area, as named on DDF's website. A program can sit under more than one idea.
+  var IDEAS = [
+    ["Technologies and the Performing Arts", "Arts & Culture"], ["Creative Labor, Creative Conditions", "Arts & Culture"],
+    ["Prevention-oriented Child Welfare", "Health & Well-being"], ["New Pathways for Health Innovation", "Health & Well-being"], ["Racial Equity in Clinical Equations", "Health & Well-being"],
+    ["Climate-smart Forests", "Nature"], ["Indigenous-led Conservation", "Nature"],
+    ["New Platforms for Diverse Voices", "Building Bridges"]
+  ];
+  var AREA = {}; IDEAS.forEach(function (d) { AREA[d[0]] = d[1]; });
+  var IDEA_OF = {
+    "Humanity AI": ["Technologies and the Performing Arts"],
+    "Artists Make Technology": ["Technologies and the Performing Arts"],
+    "DDF and Ford technology grants": ["Technologies and the Performing Arts"],
+    "Artist Relief": ["Creative Labor, Creative Conditions"],
+    "MAP Fund regranting (DDF + Mellon, 2008-2024)": ["Creative Labor, Creative Conditions", "New Platforms for Diverse Voices"],
+    "National Dance Project (reported 2025)": ["Creative Labor, Creative Conditions"],
+    "Mosaic Network and Fund": ["New Platforms for Diverse Voices", "Creative Labor, Creative Conditions"],
+    "Building Bridges Fellowship and Completion Fund": ["New Platforms for Diverse Voices"],
+    "The Muslim House (MPAC Hollywood Bureau)": ["New Platforms for Diverse Voices"],
+    "Building Bridges Documentary Fund": ["New Platforms for Diverse Voices"],
+    "Islamic Scholarship Fund creative fellowship pilot": ["New Platforms for Diverse Voices"],
+    "Catalyst Fund": ["Climate-smart Forests", "Indigenous-led Conservation"],
+    "Tribal Nations Conservation Pledge": ["Indigenous-led Conservation"],
+    "OPT-In for Families": ["Prevention-oriented Child Welfare"],
+    "Think of Us, Audacious Project": ["Prevention-oriented Child Welfare"],
+    "Collective to Strengthen Pathways for Health Research": ["New Pathways for Health Innovation"],
+    "COVID-19 Fund to Retain Clinical Scientists": ["New Pathways for Health Innovation"],
+    "Youth and Families Forward (NYC)": ["Prevention-oriented Child Welfare"],
+    "Racial Equity in Clinical Equations grants": ["Racial Equity in Clinical Equations"],
+    "Encoding Equity Alliance": ["Racial Equity in Clinical Equations"],
+    "Creative Labor, Creative Conditions campaign": ["Creative Labor, Creative Conditions"],
+    "Creative labor grants (2026)": ["Creative Labor, Creative Conditions"],
+    "Forest climate grants": ["Climate-smart Forests"],
+    "Split Rock Mountain land return": ["Indigenous-led Conservation"]
+  };
+  var CNT = {};
+  P.forEach(function (p) { p.ideas = IDEA_OF[p.n]; p.pr = AREA[p.ideas[0]]; p.ideas.forEach(function (i) { CNT[i] = (CNT[i] || 0) + 1; }); });
+  function ideaLine(p) { return "<div class='m'><b>Big idea" + (p.ideas.length > 1 ? "s" : "") + ":</b> " + p.ideas.map(esc).join(" \u00b7 ") + "</div>"; }
+  var PARTNER = {}; P.forEach(function (p) { Object.keys(p.roles || {}).forEach(function (n) { PARTNER[n] = 1; }); });
+  // Grantees received a grant from a program. Optional per program: grantees: { "Org": "note" } or { "Org": { note: "...", web: "url" } }.
+  // A grantee joins the program's members at runtime, so it does not need to be in f. GWEB holds grantee websites.
+  var GRANTEE = {}, GWEB = {}, INF = {};
+  P.forEach(function (p) { p.f.forEach(function (n) { INF[n] = 1; }); });
+  P.forEach(function (p) {
+    Object.keys(p.grantees || {}).forEach(function (n) {
+      GRANTEE[n] = 1;
+      var v = p.grantees[n];
+      if (v && typeof v === "object" && v.web) GWEB[n] = v.web;
+    });
+  });
+  function gNote(p, n) {
+    var v = p && p.grantees ? p.grantees[n] : null;
+    if (v == null) return "";
+    return typeof v === "object" ? (v.note || "") : String(v);
+  }
+  // Node type for shape and switches. Partner wins, then funder (listed in some program's f), then grantee.
+  function typeOf(id) { return id === "DDF" ? "funder" : PARTNER[id] ? "partner" : GRANTEE[id] && !INF[id] ? "grantee" : "funder"; }
+  // Which types are shown. Grantees start hidden.
+  var showT = { funder: true, partner: true, grantee: false };
+  // Members of a program as shown now: its funder list, plus grantees when shown, minus hidden types. DDF always stays.
+  function membersOf(p) {
+    var m = p.f.filter(function (n) { return n === "DDF" || showT[typeOf(n)]; });
+    if (showT.grantee) Object.keys(p.grantees || {}).forEach(function (n) { if (m.indexOf(n) < 0 && p.f.indexOf(n) < 0 && showT[typeOf(n)]) m.push(n); });
+    return m;
+  }
+  P.forEach(function (p) { p.m = membersOf(p); });
   // Endowment in $ billions: [value, basis]. FY23 figures are assets under management; the rest are total assets from tax filings.
   var E = {
     "DDF": [2.19, "FY23 AUM"], "Ford": [15.8, "FY23 AUM"], "Hewlett": [13.34, "FY23 AUM"], "MacArthur": [8.68, "FY23 AUM"],
@@ -316,7 +470,6 @@
     "David Rockefeller Fund": "https://www.davidrockefellerfund.org",
     "MacKenzie Scott": "https://yieldgiving.com",
     "Jerome": "https://www.jeromefdn.org",
-    "Dreyfus Foundation": "https://www.dreyfus.org",
     "Warhol Foundation": "https://warholfoundation.org",
     "Mike Kelley Foundation": "https://www.mikekelleyfoundation.org",
     "de Kooning Foundation": "https://www.dekooning.org",
@@ -357,13 +510,34 @@
     "Susan G. Komen": "https://www.komen.org",
     "Templeton": "https://www.templeton.org",
     "Rita Allen": "https://www.ritaallenfoundation.org",
-    "Walder": "https://www.walderfoundation.org"
+    "Walder": "https://www.walderfoundation.org",
+    "Sundance Institute": "https://www.sundance.org",
+    "Islamic Scholarship Fund": "https://islamicscholarshipfund.org",
+    "MPAC Hollywood Bureau": "https://www.mpac.org/hollywood-bureau/",
+    "Center for Asian American Media": "https://caamedia.org",
+    "Rockefeller Philanthropy Advisors": "https://www.rockpa.org",
+    "Academy of American Poets": "https://poets.org",
+    "Artadia": "https://www.artadia.org",
+    "Creative Capital": "https://creative-capital.org",
+    "Foundation for Contemporary Arts": "https://foundationforcontemporaryarts.org",
+    "MAP Fund": "https://mapfund.org",
+    "YoungArts": "https://youngarts.org",
+    "United States Artists": "https://www.unitedstatesartists.org",
+    "Americans for the Arts": "https://www.americansforthearts.org",
+    "New England Foundation for the Arts": "https://www.nefa.org",
+    "Native Americans in Philanthropy": "https://nativephilanthropy.org",
+    "Biodiversity Funders Group": "https://www.biodiversityfunders.org",
+    "Network for Landscape Conservation": "https://landscapeconservation.org",
+    "D.C. Child and Family Services Agency": "https://cfsa.dc.gov",
+    "Oregon Department of Human Services": "https://www.oregon.gov/odhs", "Council of Medical Specialty Societies": "https://cmss.org", "National Academy of Medicine": "https://nam.edu", "United States Artists": "https://www.unitedstatesartists.org", "Center for Cultural Innovation": "https://www.cciarts.org", "American Forests": "https://www.americanforests.org", "Bipartisan Policy Center": "https://bipartisanpolicy.org",
+    "Think of Us": "https://thinkofus.org"
   };
+  Object.keys(GWEB).forEach(function (n) { if (!WEB[n]) WEB[n] = GWEB[n]; });
   var fmtE = function (v) { return v >= 1 ? "$" + (v >= 10 ? v.toFixed(0) : v.toFixed(1)) + "B" : "$" + Math.round(v * 1000) + "M"; };
   var rScale = d3.scaleSqrt().domain([0, 16]).range([4, 24]);
-  var rOf = function (d) { return E[d.id] ? rScale(E[d.id][0]) : 6; };
-  var COLOR = { "Arts": "var(--c-arts)", "Child Well-being": "var(--c-child)", "Environment": "var(--c-env)", "Medical Research": "var(--c-med)" };
-  var PROGRAMS = ["Arts", "Child Well-being", "Environment", "Medical Research"];
+  var rOf = function (d) { return typeOf(d.id) !== "funder" ? 7 : E[d.id] ? rScale(E[d.id][0]) : 6; };
+  var COLOR = { "Arts & Culture": "var(--c-arts)", "Nature": "var(--c-env)", "Health & Well-being": "var(--c-child)", "Building Bridges": "var(--c-bb)" };
+  var PROGRAMS = ["Arts & Culture", "Health & Well-being", "Nature", "Building Bridges"];
   var YEARS = Array.from(new Set(P.map(function (p) { return p.y; }))).sort();
   var nameOf = function (id) { return id === "DDF" ? "Doris Duke Foundation" : id; };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
@@ -393,9 +567,19 @@
   svg.call(zoom);
   document.getElementById("zin").addEventListener("click", function () { svg.transition().duration(200).call(zoom.scaleBy, 1.6); });
   document.getElementById("zout").addEventListener("click", function () { svg.transition().duration(200).call(zoom.scaleBy, 1 / 1.6); });
+  // Reset returns to the page-load state: every Big Idea on, funders and partners shown, grantees hidden, no pick, info box closed, full view.
   document.getElementById("zrs").addEventListener("click", function () {
+    clearTimeout(showArea.t);
+    closeAll(); setProgram(null); clearFocus();
+    IDEAS.forEach(function (d) { onI[d[0]] = true; });
+    orderIdeas(null);
+    showT.funder = true; showT.partner = true; showT.grantee = false;
+    Array.prototype.forEach.call(document.querySelectorAll("#types .row"), function (row, i) {
+      var on = showT[["funder", "partner", "grantee"][i]];
+      row.classList.toggle("off", !on); row.querySelector(".sw").setAttribute("aria-checked", String(on));
+    });
+    syncChips(); syncPick(); update();
     svg.transition().duration(250).call(zoom.transform, d3.zoomIdentity);
-    clearHighlight();
   });
   // Reset also drops any highlight: the picked funder or link and the picked program. Open lists stay open.
   function clearHighlight() {
@@ -405,11 +589,15 @@
     clearFocus();
   }
   function fitTo(ids, minK) {
+    // Never fit DDF: center the other nodes, so only the start of their links back to DDF shows.
+    var others = Object.keys(ids).filter(function (k) { return k !== "DDF"; });
+    if (others.length >= 1 && ids.DDF) { var c = {}; others.forEach(function (k) { c[k] = 1; }); ids = c; }
     var xs = [], ys2 = [];
     nodes.forEach(function (d) { if (ids[d.id]) { xs.push(d.x); ys2.push(d.y); } });
-    if (xs.length < 2) { svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity); return; }
+    if (!xs.length) { svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity); return; }
     var x0 = Math.min.apply(null, xs) - 70, x1 = Math.max.apply(null, xs) + 70, y0 = Math.min.apply(null, ys2) - 60, y1 = Math.max.apply(null, ys2) + 40;
     var k = Math.max(1, Math.min(8, 0.9 * Math.min(W / (x1 - x0), H / (y1 - y0))));
+    if (xs.length === 1) k = Math.min(k, 3);
     if (minK) k = Math.max(k, minK);
     if (small) k = Math.max(k, 2);
     var t = d3.zoomIdentity.translate(W / 2, H / 2).scale(k).translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
@@ -417,7 +605,8 @@
   }
 
   // ---- Filters
-  var on = {}; PROGRAMS.forEach(function (k) { on[k] = true; });
+  var onI = {}; IDEAS.forEach(function (d) { onI[d[0]] = true; });
+  function vis(p) { return p.ideas.some(function (i) { return onI[i]; }); }
   // Timeline: two handles over the years that have a program. Start and end set the range shown.
   var ys = document.getElementById("ys"), ye = document.getElementById("ye"), rfill = document.getElementById("rfill");
   var y0v = document.getElementById("y0v"), y1v = document.getElementById("y1v"), playBtn = document.getElementById("play");
@@ -453,15 +642,31 @@
   ys.addEventListener("input", function () { stopPlay(); if (+ys.value > +ye.value) ys.value = ye.value; syncYear(); update(); });
   ye.addEventListener("input", function () { stopPlay(); if (+ye.value < +ys.value) ye.value = ys.value; syncYear(); update(); });
   syncYear();
-  var chipBox = document.getElementById("progs");
-  PROGRAMS.forEach(function (k) {
-    var b = document.createElement("button");
-    b.className = "chip"; b.type = "button"; b.innerHTML = "<i style='background:" + COLOR[k] + "'></i>" + k; b.setAttribute("aria-pressed", "true");
-    b.addEventListener("click", function () {
-      on[k] = !on[k]; b.setAttribute("aria-pressed", String(on[k])); if (!syncPick()) update();
+  // Two levels of filter: three area chips, then one chip per Big Idea. An area chip turns all its ideas on or off.
+  var chipBox = document.getElementById("progs"), ideaBox = document.getElementById("ideas");
+  function syncChips() {
+    Array.prototype.forEach.call(chipBox.children, function (c, i) {
+      c.setAttribute("aria-pressed", String(IDEAS.some(function (d) { return d[1] === PROGRAMS[i] && CNT[d[0]] && onI[d[0]]; })));
     });
-    chipBox.appendChild(b);
+    Array.prototype.forEach.call(ideaBox.querySelectorAll("button"), function (c) { c.setAttribute("aria-pressed", String(!c.disabled && !!onI[c.getAttribute("data-i")])); });
+  }
+  ideaBox.insertAdjacentHTML("beforeend", "<span class='ilab'>Big Ideas</span>");
+  IDEAS.forEach(function (d) {
+    var b = document.createElement("button");
+    b.className = "chip idea"; b.type = "button"; b.setAttribute("data-i", d[0]);
+    b.innerHTML = "<i style='background:" + COLOR[d[1]] + "'></i>" + esc(d[0]);
+    if (!CNT[d[0]]) { b.disabled = true; b.title = "No co-funded program found for this idea"; }
+    b.addEventListener("click", function () { onI[d[0]] = !onI[d[0]]; syncChips(); if (!syncPick()) update(); });
+    ideaBox.appendChild(b);
   });
+  // Desktop: the Grant Programs drop-down sits flush right on the last row of Big Idea buttons. Phone: its own row.
+  var pkGrp = document.querySelector(".grp.pk"), wideMQ = window.matchMedia("(min-width: 701px)");
+  function placePick() {
+    if (wideMQ.matches) { if (pkGrp.parentNode !== ideaBox) ideaBox.appendChild(pkGrp); }
+    else if (pkGrp.parentNode === ideaBox) ideaBox.parentNode.insertBefore(pkGrp, ideaBox.nextSibling);
+  }
+  placePick();
+  if (wideMQ.addEventListener) wideMQ.addEventListener("change", placePick); else wideMQ.addListener(placePick);
   // ---- Program picker (A-Z). Selecting one highlights its funders and links, and zooms to fit them.
   var pick = document.getElementById("pick"), sel = null;
   // The list shows only programs in categories that are turned on. Turning a category off while one of its programs is picked clears the pick.
@@ -470,19 +675,23 @@
     while (pick.options.length) pick.remove(0);
     pick.add(new Option("All", ""));
     P.slice().sort(function (a, b) { return a.n.localeCompare(b.n); }).forEach(function (p) {
-      if (on[p.pr]) pick.add(new Option(p.n + " (" + p.pr + ", " + p.y + ", " + fmt(p.amt) + ")", p.n));
+      if (vis(p)) pick.add(new Option(p.n + " (" + p.pr + ", " + p.y + ", " + fmt(p.amt) + ")", p.n));
     });
     pick.value = prev;
     if (prev && pick.value !== prev) { pick.value = ""; pick.dispatchEvent(new Event("change")); return true; }
     return false;
   }
+  syncChips();
   syncPick();
   pick.addEventListener("change", function () {
     sel = P.filter(function (p) { return p.n === pick.value; })[0] || null;
     if (sel) {
-      if (!on[sel.pr]) {
-        on[sel.pr] = true;
-        Array.prototype.forEach.call(chipBox.children, function (c, i) { if (PROGRAMS[i] === sel.pr) c.setAttribute("aria-pressed", "true"); });
+      if (!vis(sel)) { sel.ideas.forEach(function (i) { onI[i] = true; }); syncChips(); }
+      // Picking a program shows its grantees too.
+      if (!showT.grantee) {
+        showT.grantee = true;
+        var gr = document.querySelectorAll("#types .row")[2];
+        if (gr) { gr.classList.remove("off"); gr.querySelector(".sw").setAttribute("aria-checked", "true"); }
       }
       stopPlay();
       if (sel.y < YEARS[+ys.value]) ys.value = YEARS.indexOf(sel.y);
@@ -490,7 +699,7 @@
       syncYear();
     }
     update();
-    if (sel) { var ids = {}; sel.f.forEach(function (n) { ids[n] = 1; }); fitTo(ids); }
+    if (sel) { var ids = {}; sel.m.forEach(function (n) { ids[n] = 1; }); fitTo(ids); }
     else svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity);
   });
   // Choosing a program in the drop-down also opens its card on the right. "All" closes a program card.
@@ -500,7 +709,7 @@
   });
   function applySel() {
     var inP = {};
-    if (sel) sel.f.forEach(function (n) { inP[n] = 1; });
+    if (sel) sel.m.forEach(function (n) { inP[n] = 1; });
     node.classed("pdim", function (d) { return !!sel && !inP[d.id]; })
         .classed("phot", function (d) { return !!sel && !!inP[d.id]; });
     link.classed("pdim", function (e) { return !!sel && e.progs.indexOf(sel) < 0; })
@@ -538,15 +747,16 @@
     force.initialize = function (n) { ns = n; };
     return force;
   }
-  var HOME = { "Arts": [0.30, 0.58], "Environment": [0.50, 0.10], "Child Well-being": [0.86, 0.28], "Medical Research": [0.84, 0.82] };
+  var HOME = { "Technologies and the Performing Arts": [0.30, 0.22], "Creative Labor, Creative Conditions": [0.28, 0.82], "New Platforms for Diverse Voices": [0.13, 0.52],
+    "Climate-smart Forests": [0.55, 0.08], "Indigenous-led Conservation": [0.72, 0.14], "Prevention-oriented Child Welfare": [0.88, 0.45], "New Pathways for Health Innovation": [0.80, 0.85], "Racial Equity in Clinical Equations": [0.60, 0.92] };
   function anchor(d) {
     if (d.id === "DDF") return [W / 2, H / 2];
-    var ks = Object.keys(HOME).filter(function (k) { return d.progs.some(function (p) { return p.pr === k; }); });
+    var ks = Object.keys(HOME).filter(function (k) { return d.progs.some(function (p) { return p.ideas.indexOf(k) >= 0; }); });
     if (!ks.length) return [W / 2, H / 2];
     var x = 0, y = 0; ks.forEach(function (k) { x += HOME[k][0]; y += HOME[k][1]; });
     return [W * x / ks.length, H * y / ks.length];
   }
-  function biggest(e) { return e.progs.reduce(function (m, p) { return Math.max(m, p.f.length); }, 0); }
+  function biggest(e) { return e.progs.reduce(function (m, p) { return Math.max(m, p.m.length); }, 0); }
   var nodes = [], edges = [], pos = {}, node = gN.selectAll("g"), link = gE.selectAll("line"), hit = gH.selectAll("line");
   var sim = d3.forceSimulation()
     .force("link", d3.forceLink().id(function (d) { return d.id; })
@@ -611,11 +821,12 @@
     svg.classed("haspick", !!picked && picked.kind === "node");
     labels();
   }
-  function progRows(ps) {
+  function progRows(ps, pid) {
     return "<ul>" + ps.map(function (p) {
-      var others = p.f.length - 1;
+      var others = p.m.length - 1;
       return "<li><button type='button' class='plink' data-p=\"" + esc(p.n) + "\">" + esc(p.n) + "</button> <span class='m'>· <b class='pc' style='color:" + COLOR[p.pr] + "'>" + p.pr + "</b> · " + p.y + " · " + fmt(p.amt) + "</span>" +
-        "<div class='m'>" + esc(p.basis) + " · " + others + " other funder" + (others === 1 ? "" : "s") +
+        (pid && p.roles && p.roles[pid] ? "<div class='m'><b>Role:</b> " + esc(p.roles[pid]) + "</div>" : "") +
+        (pid && gNote(p, pid) ? "<div class='m'><b>Grant:</b> " + esc(gNote(p, pid)) + "</div>" : "") + ideaLine(p) + "<div class='m'>" + esc(p.basis) + " · " + others + " other organization" + (others === 1 ? "" : "s") +
         (p.src ? " · <a href='" + esc(p.src) + "' target='_blank' rel='noopener'>Source</a>" : "") + "</div></li>";
     }).join("") + "</ul>";
   }
@@ -635,7 +846,7 @@
     tip.style.left = Math.max(4, x) + "px"; tip.style.top = Math.max(4, y) + "px";
   }
   function showNodeTip(ev, d) {
-    var en = E[d.id] ? "Endowment " + fmtE(E[d.id][0]) + " \u00b7 " : "";
+    var en = PARTNER[d.id] ? "Partner \u00b7 " : typeOf(d.id) === "grantee" ? "Grantee \u00b7 " : E[d.id] ? "Endowment " + fmtE(E[d.id][0]) + " \u00b7 " : "";
     tip.innerHTML = "<div class='hd'><h3>" + esc(nameOf(d.id)) + "</h3><span class='cta'>Click for more info</span></div><div class='m'>" + en + d.progs.length + " program" + (d.progs.length === 1 ? "" : "s") + " with DDF</div>" +
       "<ul>" + d.progs.map(function (p) { return "<li><i style='display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;background:" + COLOR[p.pr] + "'></i>" + esc(p.n) + "</li>"; }).join("") + "</ul>";
     tip.hidden = false; moveTip(ev);
@@ -659,8 +870,10 @@
     var seen = {}; ps.forEach(function (p) { seen[p.pr] = 1; });
     return "<span class='dots'>" + PROGRAMS.filter(function (k) { return seen[k]; }).map(function (k) { return "<i style='background:" + COLOR[k] + "'></i>"; }).join("") + "</span>";
   }
-  function funderBtn(d) {
-    var en = E[d.id] ? "Endowment " + fmtE(E[d.id][0]) + " \u00b7 " : "";
+  function funderBtn(d, p) {
+    var en = p && p.grantees && p.grantees[d.id] != null && p.f.indexOf(d.id) < 0 ? "Grantee \u00b7 " + (gNote(p, d.id) ? esc(gNote(p, d.id)) + " \u00b7 " : "") :
+      PARTNER[d.id] ? "Partner \u00b7 " + (p && p.roles && p.roles[d.id] ? esc(p.roles[d.id]) + " \u00b7 " : "") :
+      typeOf(d.id) === "grantee" ? "Grantee \u00b7 " : E[d.id] ? "Endowment " + fmtE(E[d.id][0]) + " \u00b7 " : "";
     return "<button type='button' class='li-btn' data-f=\"" + esc(d.id) + "\"><b>" + esc(nameOf(d.id)) + "</b> " + dotsOf(d.progs) +
       "<span class='m'>" + en + d.progs.length + " program" + (d.progs.length === 1 ? "" : "s") + "</span></button>";
   }
@@ -689,8 +902,19 @@
     var keep = detail.scrollTop, html;
     if (view.t === "flist") {
       var fl = nodes.filter(function (d) { return d.id !== "DDF"; }).sort(byProgs);
-      html = "<h2>" + fl.length + " funder" + (fl.length === 1 ? "" : "s") + "</h2>" + searchBox(fl) + "<div class='lst'>" +
+      html = "<h2>" + fl.length + (fl.length === 1 ? " organization" : " organizations") + "</h2>" + searchBox(fl) + "<div class='lst'>" +
         (fl.length ? fl.map(funderBtn).join("") : "<div class='m'>No funders match these filters.</div>") + "</div>";
+    } else if (view.t === "area") {
+      var ais = IDEAS.filter(function (d) { return d[1] === view.a; }), tot = {};
+      html = "<h2 style='color:" + COLOR[view.a] + "'>" + esc(view.a) + "</h2><div class='m'>Grant programs by Big Idea. Click a program for details.</div>" +
+        ais.map(function (d) {
+          var ps = P.filter(function (p) { return p.ideas.indexOf(d[0]) >= 0; }).sort(function (a, b) { return a.n.localeCompare(b.n); });
+          ps.forEach(function (p) { tot[p.n] = 1; });
+          return "<h3 class='ah'><i style='display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:" + COLOR[view.a] + "'></i>" + esc(d[0]) + " <span class='m'>(" + ps.length + ")</span></h3><div class='lst'>" +
+            (ps.length ? ps.map(function (p) {
+              return "<button type='button' class='li-btn' data-p=\"" + esc(p.n) + "\"><b>" + esc(p.n) + "</b><span class='m'>" + p.y + " \u00b7 " + fmt(p.amt) + "</span></button>";
+            }).join("") : "<div class='m'>No programs found.</div>") + "</div>";
+        }).join("");
     } else if (view.t === "plist") {
       var pl = curAct.slice().sort(function (a, b) { return a.n.localeCompare(b.n); });
       html = "<h2>" + pl.length + " program" + (pl.length === 1 ? "" : "s") + "</h2><div class='m'>Click a program for details</div><div class='lst'>" +
@@ -698,11 +922,15 @@
           return "<button type='button' class='li-btn' data-p=\"" + esc(p.n) + "\"><b>" + esc(p.n) + "</b><span class='m'><b class='pc' style='color:" + COLOR[p.pr] + "'>" + p.pr + "</b> \u00b7 " + p.y + " \u00b7 " + fmt(p.amt) + "</span></button>";
         }).join("") : "<div class='m'>No programs match these filters.</div>") + "</div>";
     } else {
-      var p = view.p, fs = p.f.filter(function (n) { return n !== "DDF"; }).map(function (n) { return nodes.filter(function (d) { return d.id === n; })[0]; })
+      // Funders and partners first, then grantees under them.
+      var p = view.p, all = p.m.filter(function (n) { return n !== "DDF"; }).map(function (n) { return nodes.filter(function (d) { return d.id === n; })[0]; })
         .filter(Boolean).sort(byProgs);
+      var isG = function (d) { return !!(p.grantees && p.grantees[d.id] != null) && p.f.indexOf(d.id) < 0; };
+      var gs = all.filter(isG), fs = all.filter(function (d) { return !isG(d); });
       html = "<h2>" + esc(p.n) + "</h2><div class='m'><b class='pc' style='color:" + COLOR[p.pr] + "'>" + p.pr + "</b> \u00b7 " + p.y + " \u00b7 " + fmt(p.amt) + "</div>" +
-        "<div class='m'>" + esc(p.basis) + (p.src ? " \u00b7 <a href='" + esc(p.src) + "' target='_blank' rel='noopener'>Source</a>" : "") + "</div>" +
-        "<div class='m' style='margin-top:8px'>" + fs.length + " other funder" + (fs.length === 1 ? "" : "s") + " (plus DDF)</div><div class='lst'>" + fs.map(funderBtn).join("") + "</div>";
+        ideaLine(p) + "<div class='m'>" + esc(p.basis) + (p.src ? " \u00b7 <a href='" + esc(p.src) + "' target='_blank' rel='noopener'>Source</a>" : "") + "</div>" +
+        "<div class='m' style='margin-top:8px'>" + fs.length + " other funder" + (fs.length === 1 ? "" : "s") + "/partner" + (fs.length === 1 ? "" : "s") + " (plus DDF)</div><div class='lst'>" + fs.map(function (d) { return funderBtn(d, p); }).join("") + "</div>" +
+        (gs.length ? "<div class='m' style='margin-top:8px'>" + gs.length + " grantee" + (gs.length === 1 ? "" : "s") + "</div><div class='lst'>" + gs.map(function (d) { return funderBtn(d, p); }).join("") + "</div>" : "");
     }
     syncTops();
     showDetail(html, quiet);
@@ -716,6 +944,24 @@
   }
   function showFunderList() { view = { t: "flist" }; backFn = null; picked = null; restore(); renderView(); }
   function showProgramList() { view = { t: "plist" }; backFn = null; picked = null; restore(); renderView(); }
+  // Clicking an area in the title keeps only its Big Ideas on and lists its programs by Big Idea.
+  // Put the given area's Big Idea buttons first; with no area, restore the original order.
+  function orderIdeas(a) {
+    var first = IDEAS.filter(function (d) { return d[1] === a; }), rest = IDEAS.filter(function (d) { return d[1] !== a; });
+    var pkIn = pkGrp.parentNode === ideaBox ? pkGrp : null;
+    first.concat(rest).forEach(function (d) { var b = ideaBox.querySelector("button[data-i=\"" + d[0] + "\"]"); if (b) ideaBox.insertBefore(b, pkIn); });
+  }
+  function showArea(a) {
+    orderIdeas(a);
+    IDEAS.forEach(function (d) { onI[d[0]] = d[1] === a; });
+    syncChips(); if (!syncPick()) update();
+    setProgram(null);
+    view = { t: "area", a: a }; backFn = null; picked = null; restore(); renderView();
+    // Zoom to the area's organizations once the layout has moved them into their clusters. DDF is left out so the view can zoom in further.
+    clearTimeout(showArea.t);
+    showArea.t = setTimeout(function () { var ids = {}; nodes.forEach(function (d) { if (d.id !== "DDF") ids[d.id] = 1; }); fitTo(ids); }, 700);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("h1 .ma"), function (b) { b.addEventListener("click", function () { showArea(b.getAttribute("data-a")); }); });
   function itemLabel(it) {
     if (it.kind === "node") return nameOf(it.id);
     var e = it.e; return e.ddf ? nameOf(e.source.id === "DDF" ? e.target.id : e.source.id) : e.source.id + " and " + e.target.id;
@@ -723,6 +969,7 @@
   function openProgram(name, from) {
     var p = P.filter(function (x) { return x.n === name; })[0]; if (!p) return;
     var fb = from ? { fn: backFn, label: backLabel } : null;
+    var fromArea = view && view.t === "area" ? view.a : null;
     view = { t: "prog", p: p }; picked = null;
     if (from) {
       backLabel = "Back to " + itemLabel(from);
@@ -732,6 +979,8 @@
         if (!it) { select(null); return; }
         select(from.kind === "node" ? { kind: "node", id: from.id, d: it } : { kind: "link", key: from.key, e: it }, fb && fb.fn ? fb : null);
       };
+    } else if (fromArea) {
+      backFn = function () { setProgram(null); view = { t: "area", a: fromArea }; picked = null; restore(); renderView(); }; backLabel = "Back to " + fromArea;
     } else {
       backFn = function () { view = { t: "plist" }; setProgram(null); showProgramList(); }; backLabel = "Back to programs list";
     }
@@ -743,6 +992,10 @@
     var back = null;
     if (view && view.t === "flist") back = { label: "Back to funders list", fn: showFunderList };
     else if (view && view.t === "prog") { var pv = view.p; back = { label: "Back to program", fn: function () { openProgram(pv.n); } }; }
+    else if (picked && picked.kind === "link") {
+      var lk = picked.key, lb = backFn ? { fn: backFn, label: backLabel } : null;
+      back = { label: "Back to link", fn: function () { var it = edges.filter(function (x) { return x.key === lk; })[0]; if (it) select({ kind: "link", key: lk, e: it }, lb); else select(null); } };
+    }
     select({ kind: "node", id: id, d: d }, back);
   }
   function closeAll() {
@@ -781,11 +1034,12 @@
       // Leave DDF out of the zoom box so the view can zoom in further; its links run off the edge toward the center.
       if (d.id !== "DDF" && Object.keys(near).length > 2) delete near.DDF;
       fitTo(near, 2.2);
-      showDetail("<h2>" + esc(nameOf(d.id)) + "</h2><div class='m'>Endowment " + en + site + "</div><div class='m'><b class='pc'>" + d.progs.length + "</b> program" + (d.progs.length === 1 ? "" : "s") + " with DDF</div>" + progRows(d.progs));
+      showDetail("<h2>" + esc(nameOf(d.id)) + "</h2><div class='m'>" + (PARTNER[d.id] ? "Partner: a grant recipient or program partner" : typeOf(d.id) === "grantee" ? "Grantee: received a grant from the program" : "Endowment " + en) + site + "</div><div class='m'><b class='pc'>" + d.progs.length + "</b> program" + (d.progs.length === 1 ? "" : "s") + " with DDF</div>" + progRows(d.progs, d.id));
     } else {
       var e = item.e;
-      var ttl = e.ddf ? nameOf(e.source.id === "DDF" ? e.target.id : e.source.id) : e.source.id + " and " + e.target.id;
-      showDetail("<h2>" + esc(ttl) + "</h2><div class='m'>" + (e.ddf ? "Programs with DDF" : "Programs both funders back") + " · " + (e.known ? "combined program size " + fmt(e.w) : "no amount found") + "</div>" + progRows(e.progs));
+      // Both organization names are links that open that organization's card.
+      var olink = function (id) { return "<button type='button' class='plink' data-f=\"" + esc(id) + "\">" + esc(nameOf(id)) + "</button>"; };
+      showDetail("<h2>" + olink(e.source.id) + " and " + olink(e.target.id) + "</h2><div class='m'>" + (e.ddf ? "Programs with DDF" : "Programs both funders back") + " · " + (e.known ? "combined program size " + fmt(e.w) : "no amount found") + "</div>" + progRows(e.progs));
     }
     restore();
   }
@@ -800,7 +1054,7 @@
 
   // Tapping a funder that is dimmed because a program is picked: reset that program highlight, then highlight the funder.
   function tapNode(d) {
-    if (sel && sel.f.indexOf(d.id) < 0) {
+    if (sel && sel.m.indexOf(d.id) < 0) {
       var id = d.id;
       view = null; backFn = null;
       setProgram(null);
@@ -814,13 +1068,15 @@
   function update() {
     nodes.forEach(function (d) { pos[d.id] = { x: d.x, y: d.y }; });
     var a = YEARS[+ys.value], b = YEARS[+ye.value];
-    var act = P.filter(function (p) { return on[p.pr] && p.y >= a && p.y <= b; });
+    P.forEach(function (p) { p.m = membersOf(p); });
+    var act = P.filter(function (p) { return vis(p) && p.y >= a && p.y <= b; });
 
     var nodeMap = {}, pairs = {};
     act.forEach(function (p) {
-      p.f.forEach(function (n) { (nodeMap[n] = nodeMap[n] || { id: n, progs: [] }).progs.push(p); });
-      for (var i = 0; i < p.f.length; i++) for (var j = i + 1; j < p.f.length; j++) {
-        var s1 = p.f[i], t1 = p.f[j], k = s1 < t1 ? s1 + "|" + t1 : t1 + "|" + s1;
+      var f = p.m;
+      f.forEach(function (n) { (nodeMap[n] = nodeMap[n] || { id: n, progs: [] }).progs.push(p); });
+      for (var i = 0; i < f.length; i++) for (var j = i + 1; j < f.length; j++) {
+        var s1 = f[i], t1 = f[j], k = s1 < t1 ? s1 + "|" + t1 : t1 + "|" + s1;
         var e = pairs[k] || (pairs[k] = { key: k, source: s1, target: t1, w: 0, known: false, progs: [] });
         if (p.amt != null) { e.w += p.amt; e.known = true; }
         e.progs.push(p);
@@ -837,7 +1093,7 @@
     });
     var nf = nodes.length ? nodes.length - 1 : 0;
     curAct = act;
-    bf.textContent = nf + " funder" + (nf === 1 ? "" : "s");
+    bf.textContent = nf + (nf === 1 ? " organization" : " organizations");
     bp.textContent = act.length + " grant program" + (act.length === 1 ? "" : "s");
     document.getElementById("empty").style.display = act.length ? "none" : "flex";
 
@@ -850,15 +1106,17 @@
       var g = enter.append("g").style("opacity", 0);
       g.append("circle"); g.append("g").attr("class", "pie"); g.append("circle").attr("class", "tap"); g.append("text").attr("text-anchor", "middle");
       return g;
-    }).attr("class", function (d) { return "node" + (d.id === "DDF" ? " ddf" : "") + (d.progs.length >= 2 ? " multi" : ""); });
+    }).attr("class", function (d) { return "node" + (d.id === "DDF" ? " ddf" : "") + (typeOf(d.id) === "partner" ? " partner" : typeOf(d.id) === "grantee" ? " grantee" : "") + (d.progs.length >= 2 ? " multi" : ""); });
     node.select("circle").attr("r", rOf);
     node.select("g.pie").each(function (d) {
-      var r = rOf(d), has = !!E[d.id];
+      var r = rOf(d), ty = typeOf(d.id), has = !!E[d.id] || ty !== "funder";
       var ks = d.id === "DDF" ? ["DDF"] : PROGRAMS.filter(function (k) { return d.progs.some(function (p) { return p.pr === k; }); });
       var arc = d3.arc().innerRadius(0).outerRadius(r);
       var pie = d3.pie().sort(null).value(1)(ks);
+      if (ty !== "funder") pie = [pie[0]];
       d3.select(this).selectAll("path").data(pie).join("path")
-        .attr("d", arc)
+        .attr("d", ty === "partner" ? function () { var R = r * 1.35; return "M0," + (-R) + "L" + R + ",0L0," + R + "L" + (-R) + ",0Z"; } :
+          ty === "grantee" ? function () { var R = r * 1.12, x = R * 0.866; return "M0," + (-R) + "L" + x + "," + (R / 2) + "L" + (-x) + "," + (R / 2) + "Z"; } : arc)
         .attr("class", has ? null : "faint")
         .style("fill", function (a) { return a.data === "DDF" ? "var(--fg)" : COLOR[a.data]; })
         .style("fill-opacity", has ? 0.92 : 0.18)
@@ -925,6 +1183,26 @@
     lg.appendChild(el);
   });
   // The About note starts closed on every screen.
+
+  // ---- Type switches (top left). Turning a type off removes its nodes and links; DDF always stays.
+  var typesBox = document.getElementById("types");
+  [["funder", "Funders", "<circle cx='6' cy='6' r='5.5'/>"],
+   ["partner", "Partners", "<path d='M6 0L12 6L6 12L0 6Z'/>"],
+   ["grantee", "Grantees", "<path d='M6 0.5L11.8 11L0.2 11Z'/>"]].forEach(function (t) {
+    var row = document.createElement("div"), b = document.createElement("button");
+    row.className = "row" + (showT[t[0]] ? "" : " off");
+    b.type = "button"; b.className = "sw"; b.setAttribute("role", "switch"); b.setAttribute("aria-checked", String(showT[t[0]])); b.setAttribute("aria-label", "Show " + t[1].toLowerCase());
+    b.addEventListener("click", function () {
+      showT[t[0]] = !showT[t[0]];
+      b.setAttribute("aria-checked", String(showT[t[0]])); row.classList.toggle("off", !showT[t[0]]);
+      update();
+      // A picked program keeps its highlight and refits to the members still shown.
+      if (sel) { var ids = {}; sel.m.forEach(function (n) { ids[n] = 1; }); fitTo(ids); }
+    });
+    row.appendChild(b);
+    row.insertAdjacentHTML("beforeend", "<svg viewBox='0 0 12 12' aria-hidden='true'>" + t[2] + "</svg><span>" + t[1] + "</span>");
+    typesBox.appendChild(row);
+  });
 
   update();
 })();
