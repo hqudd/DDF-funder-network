@@ -94,6 +94,9 @@
   #detail .back:hover { text-decoration: underline; }
   #detail .lst { margin-top: 8px; }
   .li-btn { display: block; width: 100%; text-align: left; background: none; border: 0; border-top: 1px solid var(--line); padding: 7px 2px; cursor: pointer; font: inherit; color: var(--fg); }
+  .li-btn[hidden] { display: none; }
+  .fsearch { width: 100%; font: inherit; font-size: 13px; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; margin: 8px 0 4px; }
+  .fsearch:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
   .li-btn:hover { background: var(--bg); }
   .li-btn b { font-weight: 600; }
   .li-btn .m { display: block; }
@@ -550,7 +553,8 @@
   function syncPick() {
     var prev = pick.value;
     while (pick.options.length) pick.remove(0);
-    pick.add(new Option("All", ""));
+    var onK = PROGRAMS.filter(function (k) { return on[k]; });
+    pick.add(new Option(onK.length === PROGRAMS.length ? "All" : onK.length ? onK.join(" & ") : "None", ""));
     P.slice().sort(function (a, b) { return a.n.localeCompare(b.n); }).forEach(function (p) {
       if (on[p.pr]) pick.add(new Option(p.n + " (" + p.pr + ", " + p.y + ", " + fmt(p.amt) + ")", p.n));
     });
@@ -748,12 +752,30 @@
   }
   // Most programs first, then A-Z.
   function byProgs(a, b) { return b.progs.length - a.progs.length || a.id.localeCompare(b.id); }
+  // Search box with autocomplete for the organizations list. Typing filters the list; picking a full name opens it.
+  var fq = "";
+  function searchBox(fl) {
+    return "<input type='search' class='fsearch' list='fnames' placeholder='Search organizations' aria-label='Search organizations' autocomplete='off' value=\"" + esc(fq) + "\">" +
+      "<datalist id='fnames'>" + fl.map(function (d) { return "<option value=\"" + esc(nameOf(d.id)) + "\">"; }).join("") + "</datalist>";
+  }
+  function filterList() {
+    var q = fq.toLowerCase();
+    Array.prototype.forEach.call(detail.querySelectorAll(".li-btn[data-f]"), function (b) {
+      b.hidden = !!q && nameOf(b.getAttribute("data-f")).toLowerCase().indexOf(q) < 0;
+    });
+  }
+  detail.addEventListener("input", function (ev) {
+    if (!ev.target.classList.contains("fsearch")) return;
+    fq = ev.target.value; filterList();
+    var hit = nodes.filter(function (d) { return d.id !== "DDF" && nameOf(d.id) === fq; })[0];
+    if (hit && ev.inputType !== "insertText" && ev.inputType !== "deleteContentBackward") { fq = ""; openFunder(hit.id); }
+  });
   function renderView(quiet) {
     if (!view) return;
     var keep = detail.scrollTop, html;
     if (view.t === "flist") {
       var fl = nodes.filter(function (d) { return d.id !== "DDF"; }).sort(byProgs);
-      html = "<h2>" + fl.length + (fl.length === 1 ? " organization" : " organizations") + "</h2><div class='lst'>" +
+      html = "<h2>" + fl.length + (fl.length === 1 ? " organization" : " organizations") + "</h2>" + searchBox(fl) + "<div class='lst'>" +
         (fl.length ? fl.map(funderBtn).join("") : "<div class='m'>No funders match these filters.</div>") + "</div>";
     } else if (view.t === "plist") {
       var pl = curAct.slice().sort(function (a, b) { return a.n.localeCompare(b.n); });
@@ -774,6 +796,7 @@
     }
     syncTops();
     showDetail(html, quiet);
+    if (view.t === "flist") filterList();
     detail.scrollTop = keep;
   }
   function setProgram(name) {
