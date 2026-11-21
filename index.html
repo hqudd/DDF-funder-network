@@ -183,6 +183,8 @@
   #play { min-width: 76px; color: var(--fg); }
   .grp.pk { flex: 1 1 260px; min-width: 0; flex-wrap: nowrap; }
   .grp.pk label { white-space: nowrap; }
+  #ideas > .grp.pk { flex: 0 1 auto; margin-left: auto; }
+  #ideas > .grp.pk select { width: 340px; max-width: 100%; }
   #pick { flex: 1 1 auto; min-width: 0; width: 100%; text-overflow: ellipsis; }
   .tops { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; z-index: 6; }
   .tb { font: inherit; font-size: 12px; color: var(--fg); background: var(--ctl-bg); border: 1px solid var(--line); height: 36px; padding: 0 12px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
@@ -657,6 +659,14 @@
     b.addEventListener("click", function () { onI[d[0]] = !onI[d[0]]; syncChips(); if (!syncPick()) update(); });
     ideaBox.appendChild(b);
   });
+  // Desktop: the Grant Programs drop-down sits flush right on the last row of Big Idea buttons. Phone: its own row.
+  var pkGrp = document.querySelector(".grp.pk"), wideMQ = window.matchMedia("(min-width: 701px)");
+  function placePick() {
+    if (wideMQ.matches) { if (pkGrp.parentNode !== ideaBox) ideaBox.appendChild(pkGrp); }
+    else if (pkGrp.parentNode === ideaBox) ideaBox.parentNode.insertBefore(pkGrp, ideaBox.nextSibling);
+  }
+  placePick();
+  if (wideMQ.addEventListener) wideMQ.addEventListener("change", placePick); else wideMQ.addListener(placePick);
   // ---- Program picker (A-Z). Selecting one highlights its funders and links, and zooms to fit them.
   var pick = document.getElementById("pick"), sel = null;
   // The list shows only programs in categories that are turned on. Turning a category off while one of its programs is picked clears the pick.
@@ -932,7 +942,8 @@
   // Put the given area's Big Idea buttons first; with no area, restore the original order.
   function orderIdeas(a) {
     var first = IDEAS.filter(function (d) { return d[1] === a; }), rest = IDEAS.filter(function (d) { return d[1] !== a; });
-    first.concat(rest).forEach(function (d) { var b = ideaBox.querySelector("button[data-i=\"" + d[0] + "\"]"); if (b) ideaBox.appendChild(b); });
+    var pkIn = pkGrp.parentNode === ideaBox ? pkGrp : null;
+    first.concat(rest).forEach(function (d) { var b = ideaBox.querySelector("button[data-i=\"" + d[0] + "\"]"); if (b) ideaBox.insertBefore(b, pkIn); });
   }
   function showArea(a) {
     orderIdeas(a);
