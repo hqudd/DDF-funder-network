@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>DDF Big Ideas Network</title>
+<title>DDF Big Ideas: Arts &amp; Culture, Nature, Health &amp; Well-being</title>
 <style>
   /* Layout: sticky control bar, one full-width graph, a detail card for the tapped item, then an About disclosure. */
   :root {
@@ -47,7 +47,8 @@
   }
   .wrap { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
   header { display: flex; flex-wrap: wrap; justify-content: center; text-align: center; align-items: baseline; gap: 6px 24px; }
-  h1 { font-size: clamp(26px, 7vw, 40px); font-weight: 600; margin: 0; letter-spacing: -0.02em; line-height: 1.15; }
+  h1 span { white-space: nowrap; }
+  h1 { font-size: clamp(24px, 6vw, 34px); font-weight: 600; margin: 0; letter-spacing: -0.02em; line-height: 1.15; }
   header p { margin: 0; color: var(--muted); font-size: 13px; }
   .stage { display: flex; gap: 12px; align-items: flex-start; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .gwrap { position: relative; flex: 1 1 auto; min-width: 0; }
@@ -233,10 +234,10 @@
 
 <div class="wrap">
   <header>
-    <h1>DDF Big Ideas Network</h1>
+    <h1>DDF Big Ideas: <span style="color:var(--c-arts)">Arts &amp; Culture</span>, <span style="color:var(--c-env)">Nature</span>, <span style="color:var(--c-child)">Health &amp; Well-being</span></h1>
   </header>
   <div class="controls">
-    <div class="grp" id="progs" role="group" aria-label="DDF area"></div>
+    <div class="grp" id="progs" hidden></div>
     <div class="grp" id="ideas" role="group" aria-label="DDF Big Ideas"></div>
     <div class="grp pk"><label for="pick">Grant Programs</label><select id="pick" aria-label="Highlight a program"></select></div>
     <div class="grp yr"><button type="button" class="chip" id="play" aria-label="Play timeline">&#9654; Play</button><output id="y0v"></output><div class="rng"><div class="rtrack"></div><div class="rfill" id="rfill"></div><input type="range" id="ys" min="0" max="0" step="1" value="0" aria-label="Start year"><input type="range" id="ye" min="0" max="0" step="1" value="0" aria-label="End year"></div><output id="y1v"></output></div>
@@ -596,16 +597,6 @@
     });
     Array.prototype.forEach.call(ideaBox.querySelectorAll("button"), function (c) { c.setAttribute("aria-pressed", String(!c.disabled && !!onI[c.getAttribute("data-i")])); });
   }
-  PROGRAMS.forEach(function (k) {
-    var b = document.createElement("button");
-    b.className = "chip"; b.type = "button"; b.innerHTML = "<i style='background:" + COLOR[k] + "'></i>" + k;
-    b.addEventListener("click", function () {
-      var to = b.getAttribute("aria-pressed") !== "true";
-      IDEAS.forEach(function (d) { if (d[1] === k) onI[d[0]] = to; });
-      syncChips(); if (!syncPick()) update();
-    });
-    chipBox.appendChild(b);
-  });
   ideaBox.insertAdjacentHTML("beforeend", "<span class='ilab'>Big Ideas</span>");
   IDEAS.forEach(function (d) {
     var b = document.createElement("button");
