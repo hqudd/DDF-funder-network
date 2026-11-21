@@ -578,7 +578,9 @@
     var fs = Math.max(12, (small ? 8 : 11) * ratio / kNow);
     // Invisible tap target: at least 16 px (phone) or 10 px (desktop) on screen, whatever the zoom.
     node.select("circle.tap").attr("r", function (d) { return Math.max(rOf(d), (small ? 16 : 10) * ratio / kNow); });
-    node.select("text").style("font-size", fs + "px")
+    var pk = svg.classed("haspick");
+    // Neighbors of a clicked node get much smaller labels.
+    node.select("text").style("font-size", function () { var c = this.parentNode.classList; return (pk && c.contains("hot") && !c.contains("picked") ? fs * 0.65 : fs) + "px"; })
       .classed("off", function (d) {
         if (!small || kNow >= 2.5) return false;
         return !(d.id === "DDF" || (E[d.id] && E[d.id][0] >= 1) || (picked && picked.kind === "node" && picked.id === d.id) ||
@@ -772,6 +774,10 @@
       var d = item.d;
       var en = E[d.id] ? fmtE(E[d.id][0]) + " <span class='m'>(" + E[d.id][1] + ")</span>" : "not found";
       var site = WEB[d.id] ? " · <a href='" + esc(WEB[d.id]) + "' target='_blank' rel='noopener'>Website \u2197</a>" : "";
+      // Zoom to the clicked node and its neighbors.
+      var near = {}; near[d.id] = 1;
+      edges.forEach(function (e) { if (e.source.id === d.id || e.target.id === d.id) { near[e.source.id] = 1; near[e.target.id] = 1; } });
+      fitTo(near);
       showDetail("<h2>" + esc(nameOf(d.id)) + "</h2><div class='m'>Endowment " + en + site + "</div><div class='m'><b class='pc'>" + d.progs.length + "</b> program" + (d.progs.length === 1 ? "" : "s") + " with DDF</div>" + progRows(d.progs));
     } else {
       var e = item.e;
