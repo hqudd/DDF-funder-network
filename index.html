@@ -687,6 +687,12 @@
     sel = P.filter(function (p) { return p.n === pick.value; })[0] || null;
     if (sel) {
       if (!vis(sel)) { sel.ideas.forEach(function (i) { onI[i] = true; }); syncChips(); }
+      // Picking a program shows its grantees too.
+      if (!showT.grantee) {
+        showT.grantee = true;
+        var gr = document.querySelectorAll("#types .row")[2];
+        if (gr) { gr.classList.remove("off"); gr.querySelector(".sw").setAttribute("aria-checked", "true"); }
+      }
       stopPlay();
       if (sel.y < YEARS[+ys.value]) ys.value = YEARS.indexOf(sel.y);
       if (sel.y > YEARS[+ye.value]) ye.value = YEARS.indexOf(sel.y);
