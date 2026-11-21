@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>DDF Big Ideas: Arts &amp; Culture, Nature, Health &amp; Well-being</title>
+<title>DDF Big Ideas: Arts &amp; Culture, Health &amp; Well-being, Nature, Building Bridges</title>
 <style>
   /* Layout: sticky control bar, one full-width graph, a detail card for the tapped item, then an About disclosure. */
   :root {
@@ -48,6 +48,9 @@
   .wrap { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
   header { display: flex; flex-wrap: wrap; justify-content: center; text-align: center; align-items: baseline; gap: 6px 24px; }
   h1 span { white-space: nowrap; }
+  h1 .ma { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; text-decoration-color: transparent; }
+  h1 .ma:hover, h1 .ma:focus-visible { text-decoration-color: currentColor; }
+  #detail h3.ah { font-size: 13px; margin: 12px 0 4px; }
   h1 { font-size: clamp(24px, 6vw, 34px); font-weight: 600; margin: 0; letter-spacing: -0.02em; line-height: 1.15; }
   header p { margin: 0; color: var(--muted); font-size: 13px; }
   .stage { display: flex; gap: 12px; align-items: flex-start; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
@@ -118,6 +121,7 @@
   #detail li { border-top: 1px solid var(--line); padding-top: 8px; }
   #detail li b.n { font-weight: 600; }
   #detail .plink { font: inherit; font-weight: 600; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+  #detail h2 .plink { font-weight: inherit; }
   #detail .plink:hover, #detail .plink:focus-visible { text-decoration: underline; }
   #detail a { color: var(--accent); text-decoration: none; }
   #detail a:hover, #detail a:focus-visible { text-decoration: underline; }
@@ -234,20 +238,20 @@
 
 <div class="wrap">
   <header>
-    <h1>DDF Big Ideas: <span style="color:var(--c-arts)">Arts &amp; Culture</span>, <span style="color:var(--c-env)">Nature</span>, <span style="color:var(--c-child)">Health &amp; Well-being</span></h1>
+    <h1>DDF Big Ideas: <span><button type="button" class="ma" data-a="Arts &amp; Culture" style="color:var(--c-arts)" title="Show only Arts &amp; Culture Big Ideas">Arts &amp; Culture</button></span>, <span><button type="button" class="ma" data-a="Health &amp; Well-being" style="color:var(--c-child)" title="Show only Health &amp; Well-being Big Ideas">Health &amp; Well-being</button></span>, <span><button type="button" class="ma" data-a="Nature" style="color:var(--c-env)" title="Show only Nature Big Ideas">Nature</button></span>, <span><button type="button" class="ma" data-a="Building Bridges" style="color:var(--c-bb)" title="Show only Building Bridges Big Ideas">Building Bridges</button></span></h1>
   </header>
   <div class="controls">
     <div class="grp" id="progs" hidden></div>
     <div class="grp" id="ideas" role="group" aria-label="DDF Big Ideas"></div>
-    <div class="grp pk"><label for="pick">Grant Programs</label><select id="pick" aria-label="Highlight a program"></select></div>
-    <div class="grp yr"><button type="button" class="chip" id="play" aria-label="Play timeline">&#9654; Play</button><output id="y0v"></output><div class="rng"><div class="rtrack"></div><div class="rfill" id="rfill"></div><input type="range" id="ys" min="0" max="0" step="1" value="0" aria-label="Start year"><input type="range" id="ye" min="0" max="0" step="1" value="0" aria-label="End year"></div><output id="y1v"></output></div>
+    <div class="grp pk"><label for="pick">Grant Programs</label><select id="pick" style="max-width:420px" aria-label="Highlight a program"></select></div>
+    <div class="grp yr" style="display:none"><button type="button" class="chip" id="play" aria-label="Play timeline">&#9654; Play</button><output id="y0v"></output><div class="rng"><div class="rtrack"></div><div class="rfill" id="rfill"></div><input type="range" id="ys" min="0" max="0" step="1" value="0" aria-label="Start year"><input type="range" id="ye" min="0" max="0" step="1" value="0" aria-label="End year"></div><output id="y1v"></output></div>
   </div>
   <div class="stage">
     <div class="gwrap">
     <svg id="g" viewBox="0 0 1240 940" role="img" aria-label="Network of funders and partners that have worked on programs with the Doris Duke Foundation"></svg>
     <div class="tops"><button type="button" class="tb" id="bf" aria-pressed="false"></button><button type="button" class="tb" id="bp" aria-pressed="false"></button></div>
     <div class="types" id="types" role="group" aria-label="Show node types"></div>
-    <div class="zoom" role="group" aria-label="Zoom"><button type="button" id="zrs" class="rs" aria-label="Reset zoom">Reset</button><button type="button" id="zin" aria-label="Zoom in">+</button><button type="button" id="zout" aria-label="Zoom out">&minus;</button></div>
+    <div class="zoom" role="group" aria-label="Zoom"><button type="button" id="zrs" class="rs" aria-label="Reset to the starting view">Reset</button><button type="button" id="zin" aria-label="Zoom in">+</button><button type="button" id="zout" aria-label="Zoom out">&minus;</button></div>
     <div id="yrmark" hidden aria-hidden="true"></div>
     <div id="tip" hidden></div>
     <div id="empty">No programs match these filters.</div>
@@ -259,7 +263,7 @@
     <details class="about" id="about">
       <summary>About this data</summary>
       <div class="body">
-        <p class="note">Each dot represents a funder that has backed a program with the Doris Duke Foundation (DDF), or a partner that works on one. Partners, such as fiscal sponsors, organizers, administrators, pilot sites and grant recipients, are not co-funders. Funders are circles, partners are diamonds, and grantees (organizations that received a grant from a program) are triangles; grantees are hidden by default, and the switches at the top left show or hide each type. Node color is the DDF area (Arts & Culture, Nature, Health & Well-being), split when a funder works in more than one. Each grant program is filed under one or more of DDF's Big Ideas, and the chips filter by area or by idea. DDF's idea pages name some of these programs; the other placements are our own reading. Some programs, such as Racial Equity in Clinical Equations and the creative labor grants, are funded by DDF alone; they show partners and grantees rather than co-funders. Node size is the funder's endowment (assets under management for FY23, or total assets from tax filings, 2023-2024; faint nodes had no figure found). Line width is the combined size of the programs two funders share, so it is not either funder's own contribution, which is mostly undisclosed. Amounts mean different things by program (a pledge, a goal, a first round, a cumulative total); each program's detail card says which. Dotted lines mean no amount was found. Faint lines connect funders that co-fund the same program; they show shared membership, not a direct relationship. Each group clusters together. Drag a node to move it. Years are when a program was announced or reported. The two handles set the first and last year shown; Play moves the end handle forward. Research as of Nov 12, 2026.</p>
+        <p class="note">Each dot represents a funder that has backed a program with the Doris Duke Foundation (DDF), or a partner that works on one. Partners, such as fiscal sponsors, organizers, administrators, pilot sites and grant recipients, are not co-funders. Funders are circles, partners are diamonds, and grantees (organizations that received a grant from a program) are triangles; grantees are hidden by default, and the switches at the top left show or hide each type. Node color is the DDF area (Arts & Culture, Health & Well-being, Nature) or Building Bridges, split when a funder works in more than one. Each grant program is filed under one or more of the Big Ideas on DDF's website, and the chips filter by idea. Click an area in the title to show only its Big Ideas. New Platforms for Diverse Voices is shown with DDF's Building Bridges program. DDF's idea pages name some of these programs; the other placements are our own reading. Some programs, such as Racial Equity in Clinical Equations and the creative labor grants, are funded by DDF alone; they show partners and grantees rather than co-funders. Node size is the funder's endowment (assets under management for FY23, or total assets from tax filings, 2023-2024; faint nodes had no figure found). Line width is the combined size of the programs two funders share, so it is not either funder's own contribution, which is mostly undisclosed. Amounts mean different things by program (a pledge, a goal, a first round, a cumulative total); each program's detail card says which. Dotted lines mean no amount was found. Faint lines connect funders that co-fund the same program; they show shared membership, not a direct relationship. Each group clusters together. Drag a node to move it. Years are when a program was announced or reported. Research as of Nov 12, 2026.</p>
       </div>
     </details>
     <a class="how" href="how-claude-built-this.html">How Claude built this network visualization?</a>
@@ -358,11 +362,12 @@
       roles: {"Land Conservancy of New Jersey": "Bought the land"} }
   ];
   // Partners are grant recipients and program partners, not co-funders.
-  // DDF's Big Ideas, each under one of three areas. A program can sit under more than one idea.
+  // DDF's Big Ideas, each under an area, as named on DDF's website. A program can sit under more than one idea.
   var IDEAS = [
-    ["Technologies and the Performing Arts", "Arts & Culture"], ["Creative Labor, Creative Conditions", "Arts & Culture"], ["New Platforms for Diverse Voices", "Arts & Culture"],
+    ["Technologies and the Performing Arts", "Arts & Culture"], ["Creative Labor, Creative Conditions", "Arts & Culture"],
+    ["Prevention-oriented Child Welfare", "Health & Well-being"], ["New Pathways for Health Innovation", "Health & Well-being"], ["Racial Equity in Clinical Equations", "Health & Well-being"],
     ["Climate-smart Forests", "Nature"], ["Indigenous-led Conservation", "Nature"],
-    ["Prevention-oriented Child Welfare", "Health & Well-being"], ["New Pathways for Health Innovation", "Health & Well-being"], ["Racial Equity in Clinical Equations", "Health & Well-being"]
+    ["New Platforms for Diverse Voices", "Building Bridges"]
   ];
   var AREA = {}; IDEAS.forEach(function (d) { AREA[d[0]] = d[1]; });
   var IDEA_OF = {
@@ -529,8 +534,8 @@
   var fmtE = function (v) { return v >= 1 ? "$" + (v >= 10 ? v.toFixed(0) : v.toFixed(1)) + "B" : "$" + Math.round(v * 1000) + "M"; };
   var rScale = d3.scaleSqrt().domain([0, 16]).range([4, 24]);
   var rOf = function (d) { return typeOf(d.id) !== "funder" ? 7 : E[d.id] ? rScale(E[d.id][0]) : 6; };
-  var COLOR = { "Arts & Culture": "var(--c-arts)", "Nature": "var(--c-env)", "Health & Well-being": "var(--c-child)" };
-  var PROGRAMS = ["Arts & Culture", "Nature", "Health & Well-being"];
+  var COLOR = { "Arts & Culture": "var(--c-arts)", "Nature": "var(--c-env)", "Health & Well-being": "var(--c-child)", "Building Bridges": "var(--c-bb)" };
+  var PROGRAMS = ["Arts & Culture", "Health & Well-being", "Nature", "Building Bridges"];
   var YEARS = Array.from(new Set(P.map(function (p) { return p.y; }))).sort();
   var nameOf = function (id) { return id === "DDF" ? "Doris Duke Foundation" : id; };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
@@ -560,9 +565,19 @@
   svg.call(zoom);
   document.getElementById("zin").addEventListener("click", function () { svg.transition().duration(200).call(zoom.scaleBy, 1.6); });
   document.getElementById("zout").addEventListener("click", function () { svg.transition().duration(200).call(zoom.scaleBy, 1 / 1.6); });
+  // Reset returns to the page-load state: every Big Idea on, funders and partners shown, grantees hidden, no pick, info box closed, full view.
   document.getElementById("zrs").addEventListener("click", function () {
+    clearTimeout(showArea.t);
+    closeAll(); setProgram(null); clearFocus();
+    IDEAS.forEach(function (d) { onI[d[0]] = true; });
+    orderIdeas(null);
+    showT.funder = true; showT.partner = true; showT.grantee = false;
+    Array.prototype.forEach.call(document.querySelectorAll("#types .row"), function (row, i) {
+      var on = showT[["funder", "partner", "grantee"][i]];
+      row.classList.toggle("off", !on); row.querySelector(".sw").setAttribute("aria-checked", String(on));
+    });
+    syncChips(); syncPick(); update();
     svg.transition().duration(250).call(zoom.transform, d3.zoomIdentity);
-    clearHighlight();
   });
   // Reset also drops any highlight: the picked funder or link and the picked program. Open lists stay open.
   function clearHighlight() {
@@ -572,11 +587,15 @@
     clearFocus();
   }
   function fitTo(ids, minK) {
+    // Never fit DDF: center the other nodes, so only the start of their links back to DDF shows.
+    var others = Object.keys(ids).filter(function (k) { return k !== "DDF"; });
+    if (others.length >= 1 && ids.DDF) { var c = {}; others.forEach(function (k) { c[k] = 1; }); ids = c; }
     var xs = [], ys2 = [];
     nodes.forEach(function (d) { if (ids[d.id]) { xs.push(d.x); ys2.push(d.y); } });
-    if (xs.length < 2) { svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity); return; }
+    if (!xs.length) { svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity); return; }
     var x0 = Math.min.apply(null, xs) - 70, x1 = Math.max.apply(null, xs) + 70, y0 = Math.min.apply(null, ys2) - 60, y1 = Math.max.apply(null, ys2) + 40;
     var k = Math.max(1, Math.min(8, 0.9 * Math.min(W / (x1 - x0), H / (y1 - y0))));
+    if (xs.length === 1) k = Math.min(k, 3);
     if (minK) k = Math.max(k, minK);
     if (small) k = Math.max(k, 2);
     var t = d3.zoomIdentity.translate(W / 2, H / 2).scale(k).translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
@@ -869,6 +888,17 @@
       var fl = nodes.filter(function (d) { return d.id !== "DDF"; }).sort(byProgs);
       html = "<h2>" + fl.length + (fl.length === 1 ? " organization" : " organizations") + "</h2>" + searchBox(fl) + "<div class='lst'>" +
         (fl.length ? fl.map(funderBtn).join("") : "<div class='m'>No funders match these filters.</div>") + "</div>";
+    } else if (view.t === "area") {
+      var ais = IDEAS.filter(function (d) { return d[1] === view.a; }), tot = {};
+      html = "<h2 style='color:" + COLOR[view.a] + "'>" + esc(view.a) + "</h2><div class='m'>Grant programs by Big Idea. Click a program for details.</div>" +
+        ais.map(function (d) {
+          var ps = P.filter(function (p) { return p.ideas.indexOf(d[0]) >= 0; }).sort(function (a, b) { return a.n.localeCompare(b.n); });
+          ps.forEach(function (p) { tot[p.n] = 1; });
+          return "<h3 class='ah'><i style='display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:" + COLOR[view.a] + "'></i>" + esc(d[0]) + " <span class='m'>(" + ps.length + ")</span></h3><div class='lst'>" +
+            (ps.length ? ps.map(function (p) {
+              return "<button type='button' class='li-btn' data-p=\"" + esc(p.n) + "\"><b>" + esc(p.n) + "</b><span class='m'>" + p.y + " \u00b7 " + fmt(p.amt) + "</span></button>";
+            }).join("") : "<div class='m'>No programs found.</div>") + "</div>";
+        }).join("");
     } else if (view.t === "plist") {
       var pl = curAct.slice().sort(function (a, b) { return a.n.localeCompare(b.n); });
       html = "<h2>" + pl.length + " program" + (pl.length === 1 ? "" : "s") + "</h2><div class='m'>Click a program for details</div><div class='lst'>" +
@@ -898,6 +928,23 @@
   }
   function showFunderList() { view = { t: "flist" }; backFn = null; picked = null; restore(); renderView(); }
   function showProgramList() { view = { t: "plist" }; backFn = null; picked = null; restore(); renderView(); }
+  // Clicking an area in the title keeps only its Big Ideas on and lists its programs by Big Idea.
+  // Put the given area's Big Idea buttons first; with no area, restore the original order.
+  function orderIdeas(a) {
+    var first = IDEAS.filter(function (d) { return d[1] === a; }), rest = IDEAS.filter(function (d) { return d[1] !== a; });
+    first.concat(rest).forEach(function (d) { var b = ideaBox.querySelector("button[data-i=\"" + d[0] + "\"]"); if (b) ideaBox.appendChild(b); });
+  }
+  function showArea(a) {
+    orderIdeas(a);
+    IDEAS.forEach(function (d) { onI[d[0]] = d[1] === a; });
+    syncChips(); if (!syncPick()) update();
+    setProgram(null);
+    view = { t: "area", a: a }; backFn = null; picked = null; restore(); renderView();
+    // Zoom to the area's organizations once the layout has moved them into their clusters. DDF is left out so the view can zoom in further.
+    clearTimeout(showArea.t);
+    showArea.t = setTimeout(function () { var ids = {}; nodes.forEach(function (d) { if (d.id !== "DDF") ids[d.id] = 1; }); fitTo(ids); }, 700);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("h1 .ma"), function (b) { b.addEventListener("click", function () { showArea(b.getAttribute("data-a")); }); });
   function itemLabel(it) {
     if (it.kind === "node") return nameOf(it.id);
     var e = it.e; return e.ddf ? nameOf(e.source.id === "DDF" ? e.target.id : e.source.id) : e.source.id + " and " + e.target.id;
@@ -905,6 +952,7 @@
   function openProgram(name, from) {
     var p = P.filter(function (x) { return x.n === name; })[0]; if (!p) return;
     var fb = from ? { fn: backFn, label: backLabel } : null;
+    var fromArea = view && view.t === "area" ? view.a : null;
     view = { t: "prog", p: p }; picked = null;
     if (from) {
       backLabel = "Back to " + itemLabel(from);
@@ -914,6 +962,8 @@
         if (!it) { select(null); return; }
         select(from.kind === "node" ? { kind: "node", id: from.id, d: it } : { kind: "link", key: from.key, e: it }, fb && fb.fn ? fb : null);
       };
+    } else if (fromArea) {
+      backFn = function () { setProgram(null); view = { t: "area", a: fromArea }; picked = null; restore(); renderView(); }; backLabel = "Back to " + fromArea;
     } else {
       backFn = function () { view = { t: "plist" }; setProgram(null); showProgramList(); }; backLabel = "Back to programs list";
     }
@@ -925,6 +975,10 @@
     var back = null;
     if (view && view.t === "flist") back = { label: "Back to funders list", fn: showFunderList };
     else if (view && view.t === "prog") { var pv = view.p; back = { label: "Back to program", fn: function () { openProgram(pv.n); } }; }
+    else if (picked && picked.kind === "link") {
+      var lk = picked.key, lb = backFn ? { fn: backFn, label: backLabel } : null;
+      back = { label: "Back to link", fn: function () { var it = edges.filter(function (x) { return x.key === lk; })[0]; if (it) select({ kind: "link", key: lk, e: it }, lb); else select(null); } };
+    }
     select({ kind: "node", id: id, d: d }, back);
   }
   function closeAll() {
@@ -966,8 +1020,9 @@
       showDetail("<h2>" + esc(nameOf(d.id)) + "</h2><div class='m'>" + (PARTNER[d.id] ? "Partner: a grant recipient or program partner" : typeOf(d.id) === "grantee" ? "Grantee: received a grant from the program" : "Endowment " + en) + site + "</div><div class='m'><b class='pc'>" + d.progs.length + "</b> program" + (d.progs.length === 1 ? "" : "s") + " with DDF</div>" + progRows(d.progs, d.id));
     } else {
       var e = item.e;
-      var ttl = e.ddf ? nameOf(e.source.id === "DDF" ? e.target.id : e.source.id) : e.source.id + " and " + e.target.id;
-      showDetail("<h2>" + esc(ttl) + "</h2><div class='m'>" + (e.ddf ? "Programs with DDF" : "Programs both funders back") + " · " + (e.known ? "combined program size " + fmt(e.w) : "no amount found") + "</div>" + progRows(e.progs));
+      // Both organization names are links that open that organization's card.
+      var olink = function (id) { return "<button type='button' class='plink' data-f=\"" + esc(id) + "\">" + esc(nameOf(id)) + "</button>"; };
+      showDetail("<h2>" + olink(e.source.id) + " and " + olink(e.target.id) + "</h2><div class='m'>" + (e.ddf ? "Programs with DDF" : "Programs both funders back") + " · " + (e.known ? "combined program size " + fmt(e.w) : "no amount found") + "</div>" + progRows(e.progs));
     }
     restore();
   }
