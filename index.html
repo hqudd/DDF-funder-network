@@ -69,6 +69,12 @@
   /* A clicked node keeps a white bold label; its neighbors' labels go light gray and thin. */
   svg.haspick .node.hot:not(.picked) text { fill: #c9ccd1 !important; font-weight: 300 !important; }
   svg.haspick .node.picked text { fill: #fff !important; font-weight: 700 !important; }
+  /* Clicked node: neighbors and their links stand out; everything else fades further. */
+  svg.haspick .dim { opacity: .06 !important; }
+  svg.haspick .edge.hot { opacity: .9; stroke: var(--accent); }
+  svg.haspick .edge.other.hot { opacity: .6; stroke: var(--edge); stroke-width: 1.6px; }
+  svg.haspick .node.hot:not(.picked) circle:not(.tap) { stroke: var(--fg); stroke-width: 1.5px; }
+  svg.haspick .node.hot:not(.picked) .pie path { fill-opacity: .95 !important; }
   .dim { opacity: .12 !important; }
   .node.hot text { font-weight: 500; }
   .edge.hot { opacity: .45; stroke: var(--edge); }
